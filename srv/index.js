@@ -1,5 +1,6 @@
 var http = require('http');
 var url = require('url');
+var log = require('winston');
 var sensor = require('./sensor.js');
 
 var port = 2000;
@@ -14,7 +15,7 @@ http.createServer(function server(request, response) {
 	var urlParts = url.parse(request.url, true);
 	var path = urlParts.pathname;
 	
-	console.log('Request starting. Path=', path);
+	log.debug('Request starting. Path=', path);
 	
 	var meterCode = path.replace('/api/', '');
 	
@@ -31,4 +32,4 @@ http.createServer(function server(request, response) {
 	
 }).listen(port);
 
-console.log('Server running at http://127.0.0.1:' + port + '/');
+log.info('Server running at http://127.0.0.1:' + port + '/');

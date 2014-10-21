@@ -1,0 +1,15 @@
+{
+  "author": "rbr8",
+  "name": "weather-station-srv",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/rbr8/weather-station.git"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  }
+}

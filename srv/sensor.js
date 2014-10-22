@@ -3,19 +3,29 @@ var path = require('path');
 
 exports.readTemp = readTemp;
 
-function readTemp(meterId) {	
-	var lines = readTempRaw(meterId).split('\n');
-	
-	while (lines[0].slice(-3) !== 'YES') {
-		lines = readTempRaw(meterId).split('\n')
-	}
-	
-	return parseReading(meterId, lines);
+function readTemp(meterId, handler) {	
+	readTempRaw(meterId, function success(data) {
+		var lines = data.split('\n');
+
+		if (lines[0].slice(-3) !== 'YES') {
+			readTemp(meterId, handler);
+		} else {
+			var parsed = parseReading(meterId, lines);
+			handler(parsed);
+		}
+	});
 }
 
-function readTempRaw(meterId) {
+function readTempRaw(meterId, handler) {
 	var sourceFile = path.join('/sys/bus/w1/devices', meterId, 'w1_slave');
-	return fs.readFileSync(sourceFile, 'ascii');
+
+	fs.readFile(sourceFile, 'ascii', function onRead(err, data) {
+		if (err) {
+			throw err;		
+		}
+
+		handler(data);
+	});
 }
 
 function parseReading(meterId, lines) {

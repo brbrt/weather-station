@@ -26,9 +26,10 @@ http.createServer(function server(request, response) {
 	}
 	
 	var meterId = sensors[meterCode];
-	var result = sensor.readTemp(meterId);
-	response.writeHead(200, { 'Content-Type': 'text/plain' });
-	response.end(result, 'utf-8');
+	sensor.readTemp(meterId, function handler(result) {
+		response.writeHead(200, { 'Content-Type': 'text/plain' });
+		response.end(result, 'utf-8');
+	});
 	
 }).listen(port);
 

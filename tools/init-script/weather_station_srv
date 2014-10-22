@@ -1,0 +1,32 @@
+#!/bin/bash
+# /etc/init.d/weather_station_srv
+
+### BEGIN INIT INFO
+# Provides:          weather_station_srv
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Example initscript
+# Description:       This service is used to start the nodejs backend service of the weather_station software.
+### END INIT INFO
+
+NODE_PATH=/opt/node/bin/node
+WEATHER_SRV_PATH=/var/www/weather-station/srv/index.js
+
+case "$1" in 
+    start)
+        echo "Starting weather_station_srv"
+        su www-data -c "nohup $NODE_PATH $WEATHER_SRV_PATH > /dev/null 2>&1 &"
+        ;;
+    stop)
+        echo "Stopping weather_station_srv"
+        pkill -f $NODE_PATH.*$WEATHER_SRV_PATH
+        ;;
+    *)
+        echo "Usage: service weather_station_srv start|stop"
+        exit 1
+        ;;
+esac
+
+exit 0

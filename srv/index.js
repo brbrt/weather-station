@@ -1,15 +1,10 @@
 var http = require('http');
 var url = require('url');
 var log = require('winston');
+var config = require('./config.js');
 var sensor = require('./sensor.js');
 
-var port = 2000;
-
-var sensors = {
-	'out': '28-000005be30dc',
-	'sm': '28-000005815fdd',
-	'lg': '28-000005826997'
-};
+var sensors = config.sensors;
 
 http.createServer(function server(request, response) {
 	var urlParts = url.parse(request.url, true);
@@ -31,6 +26,6 @@ http.createServer(function server(request, response) {
 		response.end(result, 'utf-8');
 	});
 	
-}).listen(port);
+}).listen(config.port);
 
-log.info('Server running at http://127.0.0.1:' + port + '/');
+log.info('Server running on port: ' + config.port);

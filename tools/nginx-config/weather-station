@@ -2,7 +2,7 @@ server {
     listen 80;
 
     location / {
-        root /home/bananapi/therm/weather-station/fe;
+        root /var/www/weather-station/fe;
     }
 
     location /api {

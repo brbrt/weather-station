@@ -33,5 +33,7 @@ function parseReading(meterId, lines) {
 	
 	var temp = parseInt(origTemp) / 1000.0;
 	
-	return temp.toFixed(1);
+	return {
+		temp: temp.toFixed(1)
+	};
 }

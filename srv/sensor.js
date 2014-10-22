@@ -31,9 +31,9 @@ function readTempRaw(meterId, handler) {
 function parseReading(meterId, lines) {
 	var origTemp = lines[1].split('t=')[1];
 	
-	var temp = parseInt(origTemp) / 1000.0;
+	var temp = Math.round(parseInt(origTemp) / 100.0) / 10.0;
 	
 	return {
-		temp: temp.toFixed(1)
+		temp: temp
 	};
 }

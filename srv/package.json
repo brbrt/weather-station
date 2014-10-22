@@ -6,7 +6,9 @@
     "type": "git",
     "url": "git://github.com/rbr8/weather-station.git"
   },
-  "dependencies": {},
+  "dependencies": {
+    "winston": "^0.8.1"
+  },
   "devDependencies": {},
   "optionalDependencies": {},
   "engines": {

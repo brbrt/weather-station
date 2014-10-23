@@ -1,0 +1,16 @@
+{
+  "name": "weather-station-fe",
+  "version": "0.1.0",
+  "description": "The AngularJS frontend of the weather-station application.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rbr8/weather-station"
+  },
+  "author": "rbr8",
+  "license": "MIT",
+  "homepage": "https://github.com/rbr8/weather-station",
+  "dependencies": {
+    "bower": "^1.3.12"
+  }
+}

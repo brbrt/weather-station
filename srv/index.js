@@ -13,17 +13,26 @@ http.createServer(function server(request, response) {
 	
 	log.debug('Request starting. Path=', path);
 	
-	var meterCode = path.replace('/api/', '');
+	var route = path.replace('/api/', '');
+		
+	if (route.indexOf('sensors') == 0) {
+		if (route === 'sensors' || route === 'sensors/') {	
+			responseWriter.write(request, response, 200, Object.keys(sensors));
+			return;
+		}
+		
+		var meterCode = route.replace('sensors/', '');
 	
-	if (!sensors.hasOwnProperty(meterCode)) {
-		responseWriter.write(request, response, 404, '404 Not Found');
-		return;
+		if (sensors.hasOwnProperty(meterCode)) {
+			var meterId = sensors[meterCode];
+			sensor.readTemp(meterId, function handler(result) {
+				responseWriter.write(request, response, 200, result);
+			});
+			return;
+		}
 	}
-	
-	var meterId = sensors[meterCode];
-	sensor.readTemp(meterId, function handler(result) {
-		responseWriter.write(request, response, 200, result);
-	});
+		
+	responseWriter.write(request, response, 404, '404 Not Found');
 	
 }).listen(config.port);
 

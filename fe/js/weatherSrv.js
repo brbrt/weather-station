@@ -5,18 +5,23 @@ angular.module('weatherStation.weatherSrv', [
 .factory('weatherSrv', 
 	function weatherSrv($http) {
 	
-		var baseUrl = '/api/';
+		var url = '/api/sensors/';
 	
 		var factory = {
-			getMeterData: getMeterData
+			getSensors: getSensors,
+			getSensorData: getSensorData
 		};
 		
 		return factory;
 		
 		///////////////////
 		
-		function getMeterData(meterCode) {
-			return $http.get(baseUrl + meterCode);
+		function getSensors() {
+			return $http.get(url);
+		}
+		
+		function getSensorData(meterCode) {
+			return $http.get(url + meterCode);
 		}
 
 	}

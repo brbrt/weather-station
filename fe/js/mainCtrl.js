@@ -5,38 +5,34 @@ angular.module('weatherStation', [
 
 .controller('mainCtrl', 
 	function mainCtrl($scope, weatherSrv) {
-		$scope.out = null;
-		$scope.lg = null;
-		$scope.sm = null;		
+	
+		$scope.sensorData = {};	
 		
 		init();
 		
 		///////////////////
 		
 		function init() {
-			weatherSrv.getMeterData('out').then(
+			weatherSrv.getSensors().then(
 				function success(resp) {
-					$scope.out = resp.data.temp;
+					var sensors = resp.data;
+					
+					for (var i = 0; i < sensors.length; i++) {
+						getSensorData(sensors[i]);
+					}
 				},				
 				function error(err) {
 					// TODO
 				}				
 			);
-			
-			weatherSrv.getMeterData('lg').then(
+		}
+		
+		function getSensorData(sensor) {
+			weatherSrv.getSensorData(sensor).then(
 				function success(resp) {
-					$scope.lg = resp.data.temp;
+					$scope.sensorData[sensor] = resp.data;
 				},				
 				function error(err) {
-					// TODO
-				}				
-			);
-			
-			weatherSrv.getMeterData('sm').then(
-				function success(resp) {
-					$scope.sm = resp.data.temp;
-				},				
-				function error(sm) {
 					// TODO
 				}				
 			);

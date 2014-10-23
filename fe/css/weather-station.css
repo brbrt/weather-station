@@ -1,7 +1,15 @@
 .reading {
-	font-size: 16px;
+	font-size: 16px;	
+	margin-bottom: 10px;
 }
 
+.reading > .meter-name {
+	display: inline-block;
+}
+
+.reading > .temp-value {
+
+}
 
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak],
 .ng-cloak, .x-ng-cloak,

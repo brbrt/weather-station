@@ -1,5 +1,6 @@
 angular.module('weatherStation', [
-	'weatherStation.weatherSrv'
+	'weatherStation.weatherSrv',
+	'weatherStation.reading'
 ])
 
 

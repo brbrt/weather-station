@@ -1,124 +1,125 @@
 //
 // dht11.c
 //
-#include <stdio.h>
-#include <stdlib.h>
-#include <limits.h>
-
 #include <wiringPi.h>
 
-typedef unsigned char uint8;
-typedef unsigned int  uint16;
-typedef unsigned long uint32;
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
 
-#define HIGH_TIME 32
+#define MAXTIMINGS	85
+
+struct Reading {
+	int tempInt, tempDec;
+	int humInt, humDec;
+};
 
 int pinNumber = 15;  // Default GPIO port to read data.
-uint32 databuf;
- 
- 
-uint8 readSensorData(void) {
-    uint8 crc; 
-    uint8 i;
- 
-    pinMode(pinNumber,OUTPUT); // set mode to output
-    digitalWrite(pinNumber, 0); // output a high level 
-    delay(25);
-    digitalWrite(pinNumber, 1); // output a low level 
-    pinMode(pinNumber, INPUT); // set mode to input
-    pullUpDnControl(pinNumber, PUD_UP);
 
-    delayMicroseconds(27);
-    if (digitalRead(pinNumber) == 0) { //SENSOR ANS
-        while (!digitalRead(pinNumber)); //wait to high
+int read_dht11_dat(struct Reading* result) {
+	int dht11_dat[5] = { 0, 0, 0, 0, 0 };
+	uint8_t laststate	= HIGH;
+	uint8_t counter		= 0;
+	uint8_t j		= 0, i;
 
-        for (i = 0; i < 32; i++) {
-            while (digitalRead(pinNumber)); //data clock start
-            while (!digitalRead(pinNumber)); //data start
-            delayMicroseconds(HIGH_TIME);
-            databuf *= 2;
-			
-            if (digitalRead(pinNumber) == 1) { //1
-                databuf++;
-            }
-        }
+	// Pull pin down for 18 milliseconds.
+	pinMode(pinNumber, OUTPUT);
+	digitalWrite(pinNumber, LOW);
+	delay(18);
+	
+	// Then pull it up for 40 microseconds.
+	digitalWrite(pinNumber, HIGH);
+	delayMicroseconds(40);
+	
+	// Prepare to read the pin.
+	pinMode(pinNumber, INPUT);
 
-        for (i = 0; i < 8; i++) {
-            while (digitalRead(pinNumber)); //data clock start
-            while (!digitalRead(pinNumber)); //data start
+	// Detect change and read data.
+	for (i = 0; i < MAXTIMINGS; i++) {
+		counter = 0;
+		while (digitalRead( pinNumber ) == laststate) {
+			counter++;
+			delayMicroseconds(1);
+			if (counter == 255) {
+				break;
+			}
+		}		
+		laststate = digitalRead(pinNumber);
+
+		if (counter == 255) {
+			break;
+		}
+
+		// Ignore first 3 transitions.
+		if ((i >= 4) && (i % 2 == 0)) {
+			// Shove each bit into the storage bytes.
+			dht11_dat[j / 8] <<= 1;
+			if (counter > 16) {
+				dht11_dat[j / 8] |= 1;
+			}
 			
-            delayMicroseconds(HIGH_TIME);
-            crc *= 2;  
-			
-            if (digitalRead(pinNumber) == 1) { //1
-                crc++;
-            }
-        }
-		
-		int humInt = (databuf >> 24) & 0xff;
-		int humDec = (databuf >> 16) & 0xff;
-		int tempInt = (databuf >> 8) & 0xff;
-		int tempDec = databuf & 0xff;
-		
-		if (crc != (humInt + humDec + tempInt + tempDec) & 0xFF) {
-			printf("CRC check has failed.");
-			return 2;
-        }
-		
-        return 0;
-    } else {
-        return 1;
-    }
-}
- 
-int main(int argc, char *argv[]) {
-	// Try to get the GPIO port number from the first command line argument.
-	if (argc > 1) {
-        char* tmp;  
-	    int parsed = strtol(argv[1], &tmp, 10);
-		
-		if (*tmp || parsed == LONG_MAX || parsed < 0) {
-		    printf("Invalid port passed in argument, using default. \n");
-		} else {
-		    pinNumber = parsed;
+			j++;
 		}
 	}
 
-    printf("Using GPIO%d to read data\n", pinNumber);
+	// Check we read 40 bits (8bit x 5 ) + verify checksum in the last byte.
+	if ((j >= 40) && checkCRC(dht11_dat)) {
+		struct Reading r;		
+		r.humInt = dht11_dat[0];
+		r.humDec = dht11_dat[1];
+		r.tempInt = dht11_dat[2];
+		r.tempDec = dht11_dat[3];
+		
+		*result = r;
+			
+		return 0;
+	} else {
+		printf("Data not good, skip\n");
+		return 1;
+	}
+}
 
+int checkCRC(int* dht11_dat) {
+	return dht11_dat[4] == ( (dht11_dat[0] + dht11_dat[1] + dht11_dat[2] + dht11_dat[3]) & 0xFF);
+}
+ 
+int main(int argc, char *argv[]) {
+	printf("DHT11 reading started.\n");
+
+	// Try to get the GPIO port number from the first command line argument.
+	if (argc > 1) {
+	    char* port = argv[1];
+        char* tmp;  
+	    int parsedPort = strtol(port, &tmp, 10);
+		
+		if (*tmp || parsedPort < 0 || parsedPort > 30) {
+		    printf("Invalid port passed in argument, using default. \n");
+		} else {
+		    pinNumber = parsedPort;
+		}
+	}
+
+	
     if (wiringPiSetup() == -1) {
         printf("Setup wiringPi failed!");
         return 1;
     }
- 
-    pinMode(pinNumber, OUTPUT); // set mode to output
-    digitalWrite(pinNumber, 1); // output a high level 
 
-    while (1) {
-        pinMode(pinNumber,OUTPUT); // set mode to output
-        digitalWrite(pinNumber, 1); // output a high level 
-        delay(3000);
-		
-        if (readSensorData() == 0) {
-            printf("Sensor data read ok!\n");
-			
-			int humInt = (databuf >> 24) & 0xff;
-			int humDec = (databuf >> 16) & 0xff;
-			int tempInt = (databuf >> 8) & 0xff;
-			int tempDec = databuf & 0xff;
-			
-			char* output;
-			
-			sprintf(output, "{'hum': %d.%d, 'temp': %d.%d}\n", humInt, humDec, tempInt, tempDec); 
+	while (1) {
+		struct Reading r;
+
+		if (read_dht11_dat(&r) == 0) {		
+			char output[100];			
+			sprintf(output, "{'hum': %d.%d, 'temp': %d.%d}\n", r.humInt, r.humDec, r.tempInt, r.tempDec); 
 			
 			printf(output);
 			
+			// Stop on the first valid reading.
 			break;
-        } else {
-            printf("Sorry! Couldn't read data from sensor.\n");
-            databuf = 0;
-        }
-    }
-	
-    return 0;
+		}
+		
+		delay(1000);
+	}
+
+	return 0;
 }

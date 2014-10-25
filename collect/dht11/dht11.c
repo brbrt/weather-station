@@ -9,6 +9,8 @@
 
 #define MAXTIMINGS	85
 
+#define MAX_RETRIES	10
+
 struct Reading {
 	int tempInt, tempDec;
 	int humInt, humDec;
@@ -63,7 +65,7 @@ int read_dht11_dat(struct Reading* result) {
 	}
 
 	// Check we read 40 bits (8bit x 5 ) + verify checksum in the last byte.
-	if ((j >= 40) && checkCRC(dht11_dat)) {
+	if ((j >= 40) && check_crc(dht11_dat)) {
 		struct Reading r;		
 		r.humInt = dht11_dat[0];
 		r.humDec = dht11_dat[1];
@@ -74,18 +76,16 @@ int read_dht11_dat(struct Reading* result) {
 			
 		return 0;
 	} else {
-		printf("Data not good, skip\n");
+		fprintf(stderr, "Skipping invalid data\n");
 		return 1;
 	}
 }
 
-int checkCRC(int* dht11_dat) {
+int check_crc(int* dht11_dat) {
 	return dht11_dat[4] == ( (dht11_dat[0] + dht11_dat[1] + dht11_dat[2] + dht11_dat[3]) & 0xFF);
 }
  
 int main(int argc, char *argv[]) {
-	printf("DHT11 reading started.\n");
-
 	// Try to get the GPIO port number from the first command line argument.
 	if (argc > 1) {
 	    char* port = argv[1];
@@ -93,7 +93,7 @@ int main(int argc, char *argv[]) {
 	    int parsedPort = strtol(port, &tmp, 10);
 		
 		if (*tmp || parsedPort < 0 || parsedPort > 30) {
-		    printf("Invalid port passed in argument, using default. \n");
+		    fprintf(stderr, "Invalid port '%s' passed in argument, using the default '%d'. \n", port, pinNumber);
 		} else {
 		    pinNumber = parsedPort;
 		}
@@ -101,11 +101,12 @@ int main(int argc, char *argv[]) {
 
 	
     if (wiringPiSetup() == -1) {
-        printf("Setup wiringPi failed!");
+        fprintf(stderr, "Setup wiringPi failed!");
         return 1;
     }
 
-	while (1) {
+	int i;
+	for (i = 0; i < MAX_RETRIES; i++) {
 		struct Reading r;
 
 		if (read_dht11_dat(&r) == 0) {		
@@ -115,11 +116,13 @@ int main(int argc, char *argv[]) {
 			printf(output);
 			
 			// Stop on the first valid reading.
-			break;
+			return 0;
 		}
 		
 		delay(1000);
 	}
 
-	return 0;
+	fprintf(stderr, "Couldn't read valid data in %d retries, exiting.", MAX_RETRIES);
+	
+	return 2;
 }

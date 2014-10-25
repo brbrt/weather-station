@@ -111,7 +111,7 @@ int main(int argc, char *argv[]) {
 
 		if (read_dht11_dat(&r) == 0) {		
 			char output[100];			
-			sprintf(output, "{'hum': %d.%d, 'temp': %d.%d}\n", r.humInt, r.humDec, r.tempInt, r.tempDec); 
+			sprintf(output, "{\"hum\": %d.%d, \"temp\": %d.%d}\n", r.humInt, r.humDec, r.tempInt, r.tempDec); 
 			
 			printf(output);
 			

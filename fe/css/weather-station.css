@@ -2,17 +2,40 @@ body {
 	font-family: 'Ubuntu', sans-serif;
 }
 
-.reading {
-	font-size: 16px;	
-	margin-bottom: 10px;
+.page-title {
+	color: rgb(0, 87, 163);
 }
 
-.reading > .meter-name {
+.reading {
+	font-size: 16px;	
+	margin-bottom: 1px;
+	width: 275px;
+	background-color: rgb(0, 87, 163);
+	color: white;
+	padding: 5px;
+}
+
+.reading  .meter-name {
+	display: inline-block;
+	vertical-align: middle;
+	width: 100px;
+	text-align: center;
+}
+
+.reading  .value-container {
 	display: inline-block;
 }
 
-.reading > .temp-value {
+.reading  .icon {
+	display: inline-block;
+	vertical-align: middle;
+	margin-left: 15px;
+	font-size: 35px;
+}
 
+.reading  .value {
+	vertical-align: middle;
+	display: inline-block;
 }
 
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak],

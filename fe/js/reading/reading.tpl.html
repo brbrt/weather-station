@@ -3,9 +3,23 @@
 		{{ meterName }}
 	</div>
 	
-	<i class="wi wi-thermometer-exterior"></i>
+	<div class="value-container">
+		<div class="icon">
+			<i class="wi wi-thermometer"></i>
+		</div>
 	
-	<div class="temp-value">
-		{{ data.temp }} °C
+		<div class="value">
+			{{ data.temp | number }} °C
+		</div>
+	</div>
+	
+	<div class="value-container" ng-if="data.hum">
+		<div class="icon">
+			<i class="wi wi-sprinkles"></i>
+		</div>
+		
+		<div class="value">
+			{{ data.hum | number }} %
+		</div>
 	</div>
 </div>

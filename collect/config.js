@@ -1,9 +1,9 @@
 var nconf = require('nconf');
 
-// Get configuration with nconf, and export to our custom object.
-
-var config = {};
-module.exports = config;
+// Wrap nconf.get function.
+module.exports = function getConfig(key) {
+    return nconf.get(key);
+};
 
 
 // First consider commandline arguments and environment variables, respectively.
@@ -15,17 +15,13 @@ nconf.argv().env();
 
 // Provide default values for settings not provided above.
 nconf.defaults({
-    'db': {
-        'host': '127.0.0.1',
-        'user': 'user',
-        'password': 'changeit'
+    db: {
+        host: '127.0.0.1',
+        user: 'user',
+        password: 'changeit'
+    },
+    sensors: {
+        dhtCommand: 'sensors/bin/dht11',
+        dsCommand: 'sensors/ds18b20.sh'
     }
 });
-
-
-// Populate our config object from nconf.
-config.db = {
-    host: nconf.get('db:host'),
-    user:nconf.get('db:user'),
-    password: nconf.get('db:password')
-};

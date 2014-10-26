@@ -7,13 +7,12 @@ if (process.argv.length > 2) {
 	meterId = process.argv[2];
 }
 
-readTemp(meterId, function handler(data) {	
+readTemp(meterId, function handler(data) {
 	var output = JSON.stringify(data) + '\n';
 	process.stdout.write(output);
 });
 
-
-function readTemp(meterId, handler) {	
+function readTemp(meterId, handler) {
 	readTempRaw(meterId, function success(data) {
 		var lines = data.split('\n');
 
@@ -35,16 +34,16 @@ function readTempRaw(meterId, handler) {
 			process.stderr.write(err + '\n');
 			process.exit(1);
 		}
-		
+
 		handler(data);
 	});
 }
 
 function parseReading(meterId, lines) {
 	var origTemp = lines[1].split('t=')[1];
-	
+
 	var temp = Math.round(parseInt(origTemp) / 100.0) / 10.0;
-	
+
 	return {
 		temp: temp
 	};

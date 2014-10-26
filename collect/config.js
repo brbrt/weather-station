@@ -1,9 +1,12 @@
 var nconf = require('nconf');
+var winston = require('winston');
 
 // Wrap nconf.get function.
-module.exports = function getConfig(key) {
+module.exports = getConfig;
+
+function getConfig(key) {
     return nconf.get(key);
-};
+}
 
 
 // First consider commandline arguments and environment variables, respectively.
@@ -18,10 +21,21 @@ nconf.defaults({
     db: {
         host: '127.0.0.1',
         user: 'user',
-        password: 'changeit'
+        password: 'changeit',
+        dbName: 'weather_station'
     },
     sensors: {
         dhtCommand: 'sensors/bin/dht11',
         dsCommand: 'sensors/ds18b20.sh'
+    },
+    env: {
+        debug: false
     }
 });
+
+
+
+// Set default log level based on config.
+var level = getConfig('env:debug') ? 'debug' : 'info';
+winston.remove(winston.transports.Console);
+winston.add(winston.transports.Console, {level: level});

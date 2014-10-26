@@ -13,3 +13,4 @@ CREATE TABLE actual_values (
 ALTER TABLE actual_values 
 ADD CONSTRAINT actual_values_sensors 
 FOREIGN KEY actual_values_sensors (sensor_id) REFERENCES sensors (sensor_id);
+

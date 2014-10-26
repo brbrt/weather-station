@@ -8,3 +8,4 @@ CREATE TABLE sensors (
     description VARCHAR(2048),
     CONSTRAINT sensors_pk PRIMARY KEY (sensor_id)
 );
+

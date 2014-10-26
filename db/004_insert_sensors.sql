@@ -9,3 +9,4 @@ INSERT INTO `sensors` (`code`, `type`, `physical_id`, `description`)
 	 
 INSERT INTO `sensors` (`code`, `type`, `physical_id`, `description`) 
      VALUES ('sm', 'dht', '15', 'Kis szoba');
+

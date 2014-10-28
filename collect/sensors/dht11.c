@@ -122,7 +122,7 @@ int main(int argc, char *argv[]) {
 		delay(1000);
 	}
 
-	fprintf(stderr, "Couldn't read valid data in %d retries, exiting.", MAX_RETRIES);
+	fprintf(stderr, "Couldn't read valid data in %d retries, exiting.\n", MAX_RETRIES);
 	
 	return 2;
 }

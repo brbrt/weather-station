@@ -9,7 +9,7 @@ module.exports = collect;
 
 
 function collect(sensors) {
-	log.debug('Start collecting sensor data.');
+	log.info('Start collecting sensor data.');
 
 	var prs = [];
 
@@ -17,34 +17,40 @@ function collect(sensors) {
 		var sen = sensors[i];
 
 		var pr = read(sen);
+
 		prs.push(pr);
 	}
 
-	return $q.all(prs);
+
+	var allProm = $q.all(prs);
+
+	allProm.then(function success() {
+		log.info('Collecting sensor data is done.');
+	});
+
+	return allProm;
 }
 
 function read(sen) {
 	var deferred = $q.defer();
 
-	log.debug('Read data of sensor: ' + JSON.stringify(sen));
-
 	var pr = (sen.type === 'dht') ? readDHT11(sen) : readDS18B20(sen);
 
 	pr.then(
 		function success(result) {
-			log.debug(sen.type + ' ' + sen.code + '= ' + data);
+			log.debug('Result of sensor ' + sen.sensor_id + '="' + result);
 
 			// Add the sensor info to the result.
 			deferred.resolve({
-				sensor: sen,
-				result: data
+			 	sensor_id: sen.sensor_id,
+			 	result: result
 			});
 		},
 		function error(err) {
-			log.debug('Error:' + sen.type + ' ' + sen.code + '= ' + data);
+			log.debug('Error of sensor ' + sen.sensor_id + '="' + err);
 			deferred.reject({
-				sensor: sen,
-				err: err
+			 	sensor_id: sen.sensor_id,
+			 	err: err
 			});
 		}
 	);
@@ -70,18 +76,14 @@ function callProc(command, args) {
 	var out = '', err = '';
 
 	proc.stdout.on('data', function onMsg(data) {
-		log.debug('callProc stdout: ' + data);
 	    out += data;
 	});
 
 	proc.stderr.on('data', function onErr(data) {
-		log.debug('callProc stderr: ' + data);
 	    err += data;
 	});
 
 	proc.on('close', function onClose(code) {
-		log.debug('callProc close: ' + code);
-
 		if (code === 0) {
 			deferred.resolve(out);
 		} else {

@@ -14,7 +14,7 @@ function getSensors() {
 
     var db = new Db();
 
-    db.c.query('SELECT sensor_id, code, type, physical_id FROM sensors')
+    db.c.query('SELECT sensor_id, type, physical_id FROM sensors')
         .on('result', function(res) {
             res.on('row', function(row) {
                 sensors.push(row);

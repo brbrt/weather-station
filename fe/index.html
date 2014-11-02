@@ -5,7 +5,7 @@
   <meta charset="utf-8">
 
   <title>Időjárás állomás</title>
-  
+
   <link rel="stylesheet" href="bower_components/ubuntu-fontface/ubuntu-base.css">
   <link rel="stylesheet" href="bower_components/weather-icons/css/weather-icons.css">
   <link rel="stylesheet" href="css/weather-station.css">
@@ -13,18 +13,21 @@
 
 <body ng-controller="mainCtrl">
   <h1 class="page-title">Időjárás állomás</h1>
-  
-  <reading meter-name="Külső" data="sensorData.out"></reading>
-  <reading meter-name="Előszoba" data="sensorData.fr"></reading>
-  <reading meter-name="Nagy szoba" data="sensorData.lg"></reading>
-  <reading meter-name="Kis szoba" data="sensorData.sm"></reading>
-  
-  
+
+  <div ng-repeat="s in sensorData">
+      <reading data="s"></reading>
+  </div>
+
+  <div class="measure-date">
+      Leolvasva: {{ measureDate | date }}
+  </div>
+
+
   <script src="bower_components/angular/angular.js"></script>
   <script src="js/mainCtrl.js"></script>
-  <script src="js/weatherSrv.js"></script>  
-  <script src="js/reading/reading.js"></script>    
-  
+  <script src="js/actualSrv.js"></script>
+  <script src="js/reading/reading.js"></script>
+
   <script>
     angular.element(document).ready(function() {
       angular.bootstrap(document, ['weatherStation']);

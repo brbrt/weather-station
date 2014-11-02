@@ -28,13 +28,13 @@ function initConnection() {
     });
 
 
-    c.on('connect', function() {
+    c.on('connect', function onConnect() {
         log.debug('Client connected.');
     })
-    .on('error', function(err) {
+    .on('error', function onError(err) {
         log.error('Client error: ' + err);
     })
-    .on('close', function(hadError) {
+    .on('close', function onClose(hadError) {
         log.debug('Client closed.');
     });
 

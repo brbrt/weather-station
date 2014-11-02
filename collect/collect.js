@@ -24,9 +24,14 @@ function collect(sensors) {
 
 	var allProm = $q.all(prs);
 
-	allProm.then(function success() {
-		log.info('Collecting sensor data is done.');
-	});
+	allProm.then(
+		function success() {
+			log.info('Collecting sensor data is done.');
+		},
+		function error(err) {
+			log.info('Collecting sensor data fas failed: ' + JSON.stringify(err));
+		}
+	);
 
 	return allProm;
 }
@@ -38,18 +43,19 @@ function read(sen) {
 
 	pr.then(
 		function success(result) {
-			log.debug('Result of sensor ' + sen.sensor_id + '="' + result);
+			log.debug('Result of sensor ' + sen.sensor_id + '=' + result);
 
 			// Add the sensor info to the result.
 			deferred.resolve({
-			 	sensor_id: sen.sensor_id,
+			 	sensor: sen,
 			 	result: result
 			});
 		},
 		function error(err) {
-			log.debug('Error of sensor ' + sen.sensor_id + '="' + err);
+			log.debug('Error of sensor ' + sen.sensor_id + '=' + err);
+			
 			deferred.reject({
-			 	sensor_id: sen.sensor_id,
+			 	sensor: sen,
 			 	err: err
 			});
 		}

@@ -14,19 +14,19 @@ function getSensors() {
 
     var db = new Db();
 
-    db.c.query('SELECT sensor_id, type, physical_id FROM sensors')
-        .on('result', function(res) {
-            res.on('row', function(row) {
+    db.c.query('SELECT sensor_id, type, physical_id FROM sensors ORDER BY sensor_id')
+        .on('result', function onResult(res) {
+            res.on('row', function onRow(row) {
                 sensors.push(row);
             })
-        .on('error', function(err) {
-            deferred.reject(err);
-        })
+            .on('error', function onError(err) {
+                deferred.reject(err);
+            })
      })
-     .on('end', function() {
+     .on('end', function onEnd() {
          deferred.resolve(sensors);
 
-         db.close()
+         db.close();
      });
 
      return deferred.promise;

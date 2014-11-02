@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS actual_values;
 
 CREATE TABLE actual_values (
     sensor_id INT NOT NULL ,
-    measure_date DATE NOT NULL ,
+    measure_date DATETIME NOT NULL ,
     temp_value NUMERIC(5,1) NOT NULL ,
     hum_value NUMERIC(5,1),
 

@@ -1,3 +1,3 @@
 #!/bin/sh
 
-echo {"temp": 22.3}
+echo {\"temp\": 22.3}

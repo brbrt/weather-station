@@ -1,3 +1,6 @@
 #!/bin/sh
 
-`which node || which nodejs` ds18b20.js $@
+# Get the directory of this script
+DIR=$(readlink -f $0 | xargs dirname)
+
+`which node || which nodejs` $DIR/ds18b20.js $@

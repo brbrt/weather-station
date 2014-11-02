@@ -1,5 +1,7 @@
 var nconf = require('nconf');
 var winston = require('winston');
+var path = require('path');
+
 
 // Wrap nconf.get function.
 module.exports = getConfig;
@@ -25,8 +27,8 @@ nconf.defaults({
         dbName: 'weather_station'
     },
     sensors: {
-        dhtCommand: 'sensors/bin/dht11',
-        dsCommand: 'sensors/ds18b20.sh'
+        dhtCommand: path.resolve(__dirname, 'sensors/dht11.sh'),
+        dsCommand: path.resolve(__dirname, 'sensors/ds18b20.sh')
     },
     env: {
         debug: false

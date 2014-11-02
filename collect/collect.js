@@ -89,6 +89,10 @@ function callProc(command, args) {
 	    err += data;
 	});
 
+	proc.on('error', function onError(err) {
+		deferred.reject(err);
+	});
+
 	proc.on('close', function onClose(code) {
 		if (code === 0) {
 			deferred.resolve(out);

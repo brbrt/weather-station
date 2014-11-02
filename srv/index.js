@@ -23,8 +23,8 @@ http.createServer(function server(request, response) {
 				responseWriter.write(request, response, 200, data);
 				log.debug('Actual values: ' + JSON.stringify(data));
 			}).catch(function error(err) {
-				log.info('Error: ' + JSON.stringify(err));
 				responseWriter.write(request, response, 500, '500 Internal error');
+				log.info('Error: ' + JSON.stringify(err));
 			});
 
 		return;

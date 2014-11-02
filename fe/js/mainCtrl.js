@@ -1,41 +1,30 @@
 angular.module('weatherStation', [
-	'weatherStation.weatherSrv',
+	'weatherStation.actualSrv',
 	'weatherStation.reading'
 ])
 
 
-.controller('mainCtrl', 
-	function mainCtrl($scope, weatherSrv) {
-	
-		$scope.sensorData = {};	
-		
+.controller('mainCtrl',
+	function mainCtrl($scope, actualSrv) {
+
+		$scope.sensorData = [];
+		$scope.measureDate = null;
+
 		init();
-		
+
 		///////////////////
-		
+
 		function init() {
-			weatherSrv.getSensors().then(
+			actualSrv.getData().then(
 				function success(resp) {
-					var sensors = resp.data;
-					
-					for (var i = 0; i < sensors.length; i++) {
-						getSensorData(sensors[i]);
-					}
-				},				
+					var data = resp.data;
+					$scope.sensorData = data;
+
+					$scope.measureDate = data[0].date;
+				},
 				function error(err) {
-					// TODO
-				}				
-			);
-		}
-		
-		function getSensorData(sensor) {
-			weatherSrv.getSensorData(sensor).then(
-				function success(resp) {
-					$scope.sensorData[sensor] = resp.data;
-				},				
-				function error(err) {
-					// TODO
-				}				
+					alert('Hiba történt az adatok lekérdezése közben.');
+				}
 			);
 		}
 	}

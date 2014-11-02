@@ -1,14 +1,39 @@
-var config = {};
+var nconf = require('nconf');
+var winston = require('winston');
+var path = require('path');
 
-module.exports = config;
+
+// Wrap nconf.get function.
+module.exports = getConfig;
+
+function getConfig(key) {
+    return nconf.get(key);
+}
 
 
-config.port = 2000;
+// First consider commandline arguments and environment variables, respectively.
+// E.g. node index.js --db:host '192.168.1.1'
+nconf.argv().env();
 
-config.sensors = {
-        'out': '28-000005be30dc',
-        'sm': '28-000005815fdd',
-        'lg': '28-000005816577',
-	'fr': '28-000005826997'
-};
+// Then load configuration from a designated file.
+// nconf.file({ file: 'config.json' });
 
+// Provide default values for settings not provided above.
+nconf.defaults({
+    port: 2000,
+    db: {
+        host: '127.0.0.1',
+        user: 'user',
+        password: 'changeit',
+        dbName: 'weather_station'
+    },
+    env: {
+        debug: false
+    }
+});
+
+
+// Set default log level based on config.
+var level = getConfig('env:debug') ? 'debug' : 'info';
+winston.remove(winston.transports.Console);
+winston.add(winston.transports.Console, {level: level});

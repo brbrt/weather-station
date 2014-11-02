@@ -1,7 +1,7 @@
 CREATE OR REPLACE VIEW actual_values_vw AS
-SELECT av.measure_date,
-       av.temp_value,
-       av.hum_value,
+SELECT av.measure_date as date,
+       av.temp_value as temp,
+       av.hum_value as hum,
        l.code as location_code,
        l.description as location_desc,
        l.order_val as location_order,

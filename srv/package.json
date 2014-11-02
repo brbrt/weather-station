@@ -1,4 +1,4 @@
-{  
+{
   "name": "weather-station-srv",
   "version": "0.1.0",
   "description": "The NodeJS backend of the weather-station application.",
@@ -9,6 +9,10 @@
   "author": "rbr8",
   "license": "MIT",
   "dependencies": {
+    "change-case": "^2.1.5",
+    "mariasql": "^0.1.21",
+    "nconf": "^0.6.9",
+    "q": "^1.0.1",
     "winston": "^0.8.1"
   },
   "devDependencies": {},

@@ -1,39 +1,44 @@
 var http = require('http');
 var url = require('url');
 var log = require('winston');
+
 var config = require('./config.js');
-var sensor = require('./sensor.js');
+var getActualValues = require('./db/get_actual_values.js');
+var transform = require('./transform.js');
 var responseWriter = require('./response-writer.js');
 
-var sensors = config.sensors;
 
 http.createServer(function server(request, response) {
 	var urlParts = url.parse(request.url, true);
 	var path = urlParts.pathname;
-	
-	log.debug('Request starting. Path=', path);
-	
-	var route = path.replace('/api/', '');
-		
-	if (route.indexOf('sensors') == 0) {
-		if (route === 'sensors' || route === 'sensors/') {	
-			responseWriter.write(request, response, 200, Object.keys(sensors));
-			return;
-		}
-		
-		var meterCode = route.replace('sensors/', '');
-	
-		if (sensors.hasOwnProperty(meterCode)) {
-			var meterId = sensors[meterCode];
-			sensor.readTemp(meterId, function handler(result) {
-				responseWriter.write(request, response, 200, result);
-			});
-			return;
-		}
-	}
-		
-	responseWriter.write(request, response, 404, '404 Not Found');
-	
-}).listen(config.port);
 
-log.info('Server running on port: ' + config.port);
+	log.debug('Request starting. Path=', path);
+
+	var route = path.replace('/api/', '');
+
+	if (route.indexOf('actual') === 0) {
+		getActualValues()
+			.then(transform)
+			.then(function success(data) {
+				responseWriter.write(request, response, 200, data);
+				log.debug('Actual values: ' + JSON.stringify(data));
+			}).catch(function error(err) {
+				log.info('Error: ' + JSON.stringify(err));
+				responseWriter.write(request, response, 500, '500 Internal error');
+			});
+
+		return;
+	}
+
+	notFound(request, response);
+
+}).listen(config('port'));
+
+
+log.info('Server running on port: ' + config('port'));
+
+
+
+function notFound(request, response) {
+	responseWriter.write(request, response, 404, '404 Not Found');
+}

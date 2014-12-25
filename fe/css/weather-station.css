@@ -6,6 +6,14 @@ body {
 	color: rgb(0, 87, 163);
 }
 
+.refresh-button {
+	border: 0px;
+	background-color: transparent;
+	cursor: pointer;
+	font-size: 28px;
+	color: rgb(0, 87, 163);
+}
+
 .reading {
 	font-size: 16px;
 	margin-bottom: 1px;

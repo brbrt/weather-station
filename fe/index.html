@@ -8,11 +8,18 @@
 
   <link rel="stylesheet" href="bower_components/ubuntu-fontface/ubuntu-base.css">
   <link rel="stylesheet" href="bower_components/weather-icons/css/weather-icons.css">
+  <link rel="stylesheet" href="css/spin.css">
   <link rel="stylesheet" href="css/weather-station.css">
 </head>
 
 <body ng-controller="mainCtrl">
-  <h1 class="page-title">Időjárás állomás</h1>
+  <h1 class="page-title">
+      Időjárás állomás
+
+      <button ng-click="refresh()" class="refresh-button">
+          <i class="wi wi-refresh" ng-class="{'ws-spin': isLoading}"></i>
+      </button>
+  </h1>
 
   <div ng-repeat="s in sensorData">
       <reading data="s"></reading>

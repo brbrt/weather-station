@@ -1,0 +1,10 @@
+#define WIFI_SSID "SSID"
+#define WIFI_PASSWORD "PASS"
+
+#define TARGET_HOST "192.168.1.100"
+#define TARGET_PORT 3636
+
+#define READ_INTERVAL 120
+
+#define ONE_WIRE_BUS 2
+

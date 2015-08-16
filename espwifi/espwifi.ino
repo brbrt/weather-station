@@ -80,7 +80,7 @@ void sendData(float temp) {
     return;
   }
   
-  String url = "/weather?temp=" + formatNumber(temp, VALUE_PRECISION);
+  String url = "/weather?sensor=" + String(SENSOR_ID) + "&temp=" + formatNumber(temp, VALUE_PRECISION);
   Serial.println("Requesting URL: " + url);
 
   client.print(String("POST ") + url + " HTTP/1.1\r\n" +

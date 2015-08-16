@@ -8,3 +8,5 @@
 
 #define ONE_WIRE_BUS 2
 
+#define VALUE_PRECISION 1
+

@@ -49,10 +49,13 @@ float readtemp() {
   do {
     DS18B20.requestTemperatures(); 
     temp = DS18B20.getTempCByIndex(0);
+
+    Serial.print("Raw temperature: " + String(temp) + "  ");
   } while (temp == 85.0 || temp == (-127.0));
 
-  Serial.print("Temperature: ");
-  Serial.println(temp);
+  temp = roundNumber(temp, VALUE_PRECISION);
+
+  Serial.println("\nTemperature: " + String(temp));
 
   return temp;
 }
@@ -66,9 +69,8 @@ void sendData(float temp) {
     return;
   }
   
-  String url = "/weather?temp=" + String(temp);
-  Serial.print("Requesting URL: ");
-  Serial.println(url);
+  String url = "/weather?temp=" + formatNumber(temp, VALUE_PRECISION);
+  Serial.println("Requesting URL: " + url);
 
   client.print(String("POST ") + url + " HTTP/1.1\r\n" +
                "Host: " + TARGET_HOST + "\r\n" + 
@@ -81,5 +83,16 @@ void sendData(float temp) {
   }
   
   Serial.println();
+}
+
+float roundNumber(float number, int decimalPlaces) {
+  float x = pow(10, decimalPlaces);
+  return roundf(number * x) / x;
+}
+
+String formatNumber(float number, int decimalPlaces) {
+  char charTemp[10];
+  dtostrf(number, 1, decimalPlaces, charTemp);
+  return String(charTemp);
 }
 

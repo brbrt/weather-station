@@ -7,6 +7,9 @@
 OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature DS18B20(&oneWire);
 
+float lastTemp = -15000;
+int readCount = 0;
+
 void setup() {
   Serial.begin(115200);
 
@@ -19,8 +22,18 @@ void setup() {
 
 void loop() {
   float temp = readtemp();
-  
-  sendData(temp);
+  readCount++;
+
+  Serial.println("Temperature: " + String(temp) + ", readCount:" + String(readCount));
+
+  if (temp != lastTemp || readCount == KEEPALIVE_ON_EVERY_X_READS) {
+    lastTemp = temp;
+    readCount = 0;
+    sendData(temp);
+  } else {
+    Serial.println("Not sending data now.");
+  }
+
 
   Serial.println();
   
@@ -53,11 +66,7 @@ float readtemp() {
     Serial.print("Raw temperature: " + String(temp) + "  ");
   } while (temp == 85.0 || temp == (-127.0));
 
-  temp = roundNumber(temp, VALUE_PRECISION);
-
-  Serial.println("\nTemperature: " + String(temp));
-
-  return temp;
+  return roundNumber(temp, VALUE_PRECISION);
 }
 
 void sendData(float temp) {

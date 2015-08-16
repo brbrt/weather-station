@@ -21,6 +21,8 @@ void setup() {
 }
 
 void loop() {
+  unsigned long start = millis();
+  
   float temp = readtemp();
   readCount++;
 
@@ -34,10 +36,10 @@ void loop() {
     Serial.println("Not sending data now.");
   }
 
-
-  Serial.println();
+  unsigned long elapsed = millis() - start;
+  Serial.println("This loop took " + String(elapsed) + " millis.\n");
   
-  delay(READ_INTERVAL * 1000);
+  delay(READ_INTERVAL * 1000 - elapsed);
 }
 
 void initwifi() {

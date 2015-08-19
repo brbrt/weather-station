@@ -14,16 +14,28 @@ module.exports = {
 function save(data) {
   var deferred = q.defer();
 
-  data.temp = parseFloat(data.temp);
+  var errors = checkSaveData(data);
 
-  if (isNaN(data.temp)) {
-    deferred.reject('Invalid temp value: ' + data.temp);
+  if (errors) {
+    deferred.reject(errors);
   } else {
+    data.temp = parseFloat(data.temp);
     storage.save(data);
     deferred.resolve('OK');
   }
 
   return deferred.promise;
+}
+
+function checkSaveData(data) {
+  var result = '';
+  if (isNaN(parseFloat(data.temp))) {
+    result += 'Invalid temp value: ' + data.temp + '\n'
+  }
+  if (!data.sensor) {
+    result += 'Missing sensor parameter\n';
+  }
+  return result;
 }
 
 function getLastDay() {

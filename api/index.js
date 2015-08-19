@@ -84,3 +84,4 @@ var server = app.listen(3636, function listen() {
   console.log('weather station api is listening at http://%s:%s', host, port);
 });
 
+module.exports = server;

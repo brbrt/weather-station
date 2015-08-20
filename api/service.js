@@ -48,9 +48,9 @@ function getLatest() {
 
 function getLastElement(data) {
   if (data.length == 0) {
-    return null;
+    return [];
   }
-  return data[data.length - 1];
+  return [ data[data.length - 1] ];
 }
 
 function getInterval(from, to) {

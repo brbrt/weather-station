@@ -12,6 +12,7 @@
     "weather-icons": "2.0.0",
     "ubuntu-fontface": "~0.1.3",
     "ui-router": "~0.2.15",
-    "moment": "~2.10.6"
+    "moment": "~2.10.6",
+    "dygraphs": "~1.1.1"
   }
 }

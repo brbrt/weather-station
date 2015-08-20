@@ -2,6 +2,7 @@ angular
     .module('weatherStation.history', [
         'ui.router',
 
+        'weatherStation.history.dygChart',
         'weatherStation.history.historySrv'
     ])
     .config(historyConfig)
@@ -43,6 +44,11 @@ function historyCtrl($log,
 			function success(data) {
 				vm.isLoading = false;
 				vm.sensorData = data;
+
+                vm.dygApi.refresh(data, { 
+                    labels: ['Date', 'Temp'],
+                    connectSeparatedPoints: true
+                });
 
                 $log.debug('History data:', data);
 			},

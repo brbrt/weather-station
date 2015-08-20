@@ -1,20 +1,19 @@
 var util = require('util');
 var express = require('express');
 var app = express();
+var router = express.Router();
 
 var service = require('./service.js');
 
-app.set('json spaces', 2);
-
-app.get('/', function (req, res) {
+router.get('/', function (req, res) {
   res.send('weather station api');
 });
 
-app.get('/weather', function handle(req, res) {
-  res.redirect('/weather/latest');
+router.get('/weather', function handle(req, res) {
+  res.redirect('weather/latest');
 });
 
-app.get('/weather/latest', function handle(req, res) {
+router.get('/weather/latest', function handle(req, res) {
   service
     .getLatest()
     .then(
@@ -27,7 +26,7 @@ app.get('/weather/latest', function handle(req, res) {
   );
 });
 
-app.get('/weather/lastday', function handle(req, res) {
+router.get('/weather/lastday', function handle(req, res) {
   service
     .getLastDay()
     .then(
@@ -40,7 +39,7 @@ app.get('/weather/lastday', function handle(req, res) {
     );
 });
 
-app.get('/weather/interval', function handle(req, res) {
+router.get('/weather/interval', function handle(req, res) {
   service
     .getInterval(req.query.from, req.query.to)
     .then(
@@ -53,7 +52,7 @@ app.get('/weather/interval', function handle(req, res) {
     );
 });
 
-app.post('/weather', function handle(req, res) {
+router.post('/weather', function handle(req, res) {
   console.log('Got measurement from ' + req.ip + ' ' + util.inspect(req.query));
 
   var data = {
@@ -76,6 +75,9 @@ function apiError(err, res) {
   console.log('Api error:' + util.inspect(err));
   res.status(400).send('Api error.\n');
 }
+
+app.use('/api', router);
+app.set('json spaces', 2);
 
 var server = app.listen(3636, function listen() {
   var host = server.address().address;

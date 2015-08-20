@@ -17,6 +17,8 @@
   "devDependencies": {
     "chai": "^3.2.0",
     "mocha": "^2.2.5",
-    "supertest": "^1.0.1"
+    "mock-fs": "^3.1.0",
+    "supertest": "^1.0.1",
+    "timekeeper": "0.0.5"
   }
 }

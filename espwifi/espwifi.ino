@@ -68,6 +68,8 @@ float readtemp() {
     Serial.print("Raw temperature: " + String(temp) + "  ");
   } while (temp == 85.0 || temp == (-127.0));
 
+  Serial.println();
+
   return roundNumber(temp, VALUE_PRECISION);
 }
 
@@ -80,7 +82,7 @@ void sendData(float temp) {
     return;
   }
   
-  String url = "/weather?sensor=" + String(SENSOR_ID) + "&temp=" + formatNumber(temp, VALUE_PRECISION);
+  String url = "/api/weather?sensor=" + String(SENSOR_ID) + "&temp=" + formatNumber(temp, VALUE_PRECISION);
   Serial.println("Requesting URL: " + url);
 
   client.print(String("POST ") + url + " HTTP/1.1\r\n" +

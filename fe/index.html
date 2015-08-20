@@ -12,23 +12,18 @@
   <link rel="stylesheet" href="css/weather-station.css">
 </head>
 
-<body ng-controller="mainCtrl as main">
+<body>
   <h1 class="page-title">
       Időjárás állomás
-
-      <button ng-click="main.refresh()" class="refresh-button">
-          <i class="wi wi-refresh" ng-class="{'ws-spin': main.isLoading}"></i>
-      </button>
   </h1>
 
-  <div ng-repeat="s in main.sensorData">
-      <reading data="s"></reading>
-  </div>
-
+  <div ui-view></div>
 
   <script src="bower_components/angular/angular.js"></script>
-  <script src="js/mainCtrl.js"></script>
-  <script src="js/actualSrv.js"></script>
-  <script src="js/reading/reading.js"></script>
+  <script src="bower_components/ui-router/release/angular-ui-router.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/latest/latest.js"></script>
+  <script src="js/latest/latestSrv/latestSrv.js"></script>
+  <script src="js/latest/reading/reading.js"></script>
 </body>
 </html>

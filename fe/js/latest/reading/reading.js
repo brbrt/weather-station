@@ -1,4 +1,4 @@
-angular.module('weatherStation.reading', [
+angular.module('weatherStation.latest.reading', [
 
 ])
 
@@ -9,7 +9,7 @@ angular.module('weatherStation.reading', [
 			scope: {
 				data: '='
 			},
-			templateUrl: 'js/reading/reading.tpl.html',
+			templateUrl: 'js/latest/reading/reading.tpl.html',
 			link: function(scope) {
 
 			}

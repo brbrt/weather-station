@@ -24,7 +24,7 @@ function save(data) {
       return;
     }
 
-    fs.appendFile(df.dir + df.file, row, function done(err) {
+    fs.appendFile(path.resolve(df.dir, df.file), row, function done(err) {
       if (err) {
         console.log('Error writing data: ' + err);
       }
@@ -34,10 +34,7 @@ function save(data) {
 
 function get(date) {
   var df = calculateFileName(date);
-
-  var path = df.dir + df.file;
-
-  return readFile(path).then(parseFile);
+  return readFile(path.resolve(df.dir, df.file)).then(parseFile);
 }
 
 function readFile(fileName) {
@@ -91,7 +88,7 @@ function calculateFileName(time) {
   var mtime = moment(time);
 
   return {
-    dir: 'weather/' + mtime.format('YYYY/MM/'),
+    dir: path.resolve(__dirname, 'weather', mtime.format('YYYY/MM')),
     file: mtime.format('YYYY-MM-DD') + '.csv'
   };
 }

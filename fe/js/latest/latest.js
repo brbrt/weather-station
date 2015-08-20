@@ -21,7 +21,6 @@ function latestCtrl(latestSrv) {
     var vm = this;
 
 	vm.sensorData = [];
-    vm.measureDate = null;
 	vm.isLoading = false;
 
 	vm.refresh = getData;
@@ -43,8 +42,6 @@ function latestCtrl(latestSrv) {
 
 				var data = resp.data;
 				vm.sensorData = data;
-
-				vm.measureDate = data[0].date;
 			},
 			function error(err) {
 				vm.isLoading = false;

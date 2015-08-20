@@ -6,6 +6,20 @@ body {
 	color: rgb(0, 87, 163);
 }
 
+ul.menu {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+ul.menu li {
+    display: inline-block;
+    margin-right: 1em;
+}
+
+ul.menu li a {
+    padding: 0.25em;
+}
+
 .refresh-button {
 	border: 0px;
 	background-color: transparent;

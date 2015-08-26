@@ -1,14 +1,12 @@
 <div>
-    <form name="history" ng-submit="vm.query()">
+    <form name="history">
         <span class="input-container">
-            <input type="date" ng-model="vm.params.from" />
+            <input type="date" ng-model="vm.params.from" ng-change="vm.query()" />
         </span>
 
         <span class="input-container">
-            <input type="date" ng-model="vm.params.to" />
+            <input type="date" ng-model="vm.params.to" ng-change="vm.query()" />
         </span>
-
-        <input type="submit" value="OK" />
     </form>
 
     <dyg-chart api="vm.dygApi"></dyg-chart>

@@ -28,7 +28,7 @@ void loop() {
 
   Serial.println("Temperature: " + String(temp) + ", readCount:" + String(readCount));
 
-  if (temp != lastTemp || readCount == KEEPALIVE_ON_EVERY_X_READS) {
+  if (abs(temp - lastTemp) > VALUE_CHANGE_TOLERANCE || readCount == KEEPALIVE_ON_EVERY_X_READS) {
     lastTemp = temp;
     readCount = 0;
     sendData(temp);
@@ -70,7 +70,7 @@ float readtemp() {
 
   Serial.println();
 
-  return roundNumber(temp, VALUE_PRECISION);
+  return temp;
 }
 
 void sendData(float temp) {
@@ -82,7 +82,7 @@ void sendData(float temp) {
     return;
   }
   
-  String url = "/api/weather?sensor=" + String(SENSOR_ID) + "&temp=" + formatNumber(temp, VALUE_PRECISION);
+  String url = "/api/weather?sensor=" + String(SENSOR_ID) + "&temp=" + formatNumber(temp, VALUE_DECIMAL_PLACES);
   Serial.println("Requesting URL: " + url);
 
   client.print(String("POST ") + url + " HTTP/1.1\r\n" +
@@ -96,11 +96,6 @@ void sendData(float temp) {
   }
   
   Serial.println();
-}
-
-float roundNumber(float number, int decimalPlaces) {
-  float x = pow(10, decimalPlaces);
-  return roundf(number * x) / x;
 }
 
 String formatNumber(float number, int decimalPlaces) {

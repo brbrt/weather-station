@@ -4,7 +4,7 @@
 
 #include "config.h"
 
-OneWire oneWire(ONE_WIRE_BUS);
+OneWire oneWire(ONE_WIRE_PIN);
 DallasTemperature DS18B20(&oneWire);
 
 float lastTemp = -15000;
@@ -38,7 +38,7 @@ void loop() {
 
   unsigned long elapsed = millis() - start;
   Serial.println("This loop took " + String(elapsed) + " millis.\n");
-  
+
   delay(READ_INTERVAL * 1000 - elapsed);
 }
 
@@ -59,18 +59,29 @@ void initwifi() {
 }
 
 float readtemp() {
-  float temp;
+  int retryCount = 0;
   
-  do {
+  float temp; 
+  
+  do {   
+    if (retryCount > 5) {
+      return -100;
+    }
+    
     DS18B20.requestTemperatures(); 
     temp = DS18B20.getTempCByIndex(0);
 
     Serial.print("Raw temperature: " + String(temp) + "  ");
-  } while (temp == 85.0 || temp == (-127.0));
+    retryCount++;
+  } while (!isTemperatureValid(temp));
 
   Serial.println();
 
   return temp;
+}
+
+bool isTemperatureValid(float temp) {
+  return temp < 85.0 && temp > -127.0;
 }
 
 void sendData(float temp) {

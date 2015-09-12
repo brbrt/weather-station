@@ -1,6 +1,7 @@
 var util = require('util');
 var moment = require('moment');
 var q = require('q');
+var _ = require('lodash');
 
 var storage = require('./storage.js');
 
@@ -43,14 +44,25 @@ function getLastDay() {
 }
 
 function getLatest() {
-  return getLastDay().then(getLastElement);
+  return getLastDay().then(getLastUnique);
 }
 
-function getLastElement(data) {
-  if (data.length == 0) {
-    return [];
-  }
-  return [ data[data.length - 1] ];
+function getLastUnique(data) {
+  var sensorNames = findUniqueSensorNames(data);
+
+  return _.map(sensorNames, function map(sensorName) {
+    var index = _.findLastIndex(data, function find(item) {
+      return sensorName == item.sensor;
+    });
+    return data[index];
+  });
+}
+
+function findUniqueSensorNames(data) {
+  return _.chain(data)
+    .map('sensor')
+    .uniq()
+    .value();
 }
 
 function getInterval(from, to) {

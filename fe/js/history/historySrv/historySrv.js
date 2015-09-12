@@ -24,15 +24,31 @@ function historySrv($http) {
     }
 
     function prepareForChart(resp) {
-        var result = [];
+        var labels = resp.data.sensors;
+        labels.unshift('Idő');
 
-        for (var i = 0; i < resp.data.length; i++) {
-            var item = resp.data[i];
-            var prepared = [ parseTime(item.time), item.temp ];
-            result.push(prepared);
+        var data = [];
+
+        for (var i = 0; i < resp.data.measurements.length; i++) {
+            var item = resp.data.measurements[i];
+
+            var prepared = [];
+            prepared[0] = parseTime(item.time);
+
+            for (var j = 1; j < labels.length; j++) {
+                prepared[j] = null;
+            }
+
+            var sensorIndex = labels.indexOf(item.sensor);
+            prepared[sensorIndex] = item.temp;
+
+            data.push(prepared);
         }
 
-        return result;
+        return {
+            labels: labels,
+            data: data
+        };
     }   
 
     function parseTime(orig) {

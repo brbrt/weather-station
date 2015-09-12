@@ -87,10 +87,19 @@ function getInterval(from, to) {
     start.add(1, 'days');
   }
 
-  return q.all(prs).then(combineArrays);
+  return q.all(prs)
+    .then(combineArrays)
+    .then(expandWithSensors);
 }
 
 function combineArrays(arrays) {
   return Array.prototype.concat.apply([], arrays);
+}
+
+function expandWithSensors(data) {
+  return {
+    sensors: findUniqueSensorNames(data),
+    measurements: data
+  };
 }
 

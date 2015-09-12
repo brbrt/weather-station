@@ -45,8 +45,8 @@ function historyCtrl($log,
 				vm.isLoading = false;
 				vm.sensorData = data;
 
-                vm.dygApi.refresh(data, { 
-                    labels: ['Date', 'Temp'],
+                vm.dygApi.refresh(data.data, { 
+                    labels: data.labels,
                     connectSeparatedPoints: true
                 });
 

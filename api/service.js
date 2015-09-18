@@ -44,7 +44,9 @@ function getLastDay() {
 }
 
 function getLatest() {
-  return getLastDay().then(getLastUnique);
+  return getLastDay()
+    .then(getLastUnique)
+    .then(expandWithObsoleteInfo);
 }
 
 function getLastUnique(data) {
@@ -60,9 +62,21 @@ function getLastUnique(data) {
 
 function findUniqueSensorNames(data) {
   return _.chain(data)
+    .sortBy('sensor')
     .map('sensor')
     .uniq()
     .value();
+}
+
+function expandWithObsoleteInfo(measurements) {
+  return _(measurements).forEach(function(m) {
+    m.obsolete = checkObsolete(m);
+  }).value();
+}
+
+function checkObsolete(measurement) {
+  var reference = moment().subtract(30, 'minutes');
+  return moment(measurement.time).isBefore(reference);
 }
 
 function getInterval(from, to) {

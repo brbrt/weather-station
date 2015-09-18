@@ -3,6 +3,7 @@ var moment = require('moment');
 var q = require('q');
 var _ = require('lodash');
 
+var config = require('./config.js');
 var storage = require('./storage.js');
 
 module.exports = {
@@ -75,7 +76,7 @@ function expandWithObsoleteInfo(measurements) {
 }
 
 function checkObsolete(measurement) {
-  var reference = moment().subtract(30, 'minutes');
+  var reference = moment().subtract(config('measurement:obsoleteTimeout'), 'minutes');
   return moment(measurement.time).isBefore(reference);
 }
 

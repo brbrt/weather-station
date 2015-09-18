@@ -1,6 +1,6 @@
 ﻿<div class="reading">
 	<div class="meter-name">
-		{{ data.sensor }}
+		{{ ::data.sensor }}
 	</div>
 
 	<div class="value-container">
@@ -9,17 +9,23 @@
 		</div>
 
 		<div class="value">
-			{{ data.temp | number }} °C
+			{{ ::data.temp | number : 1 }} °C
 		</div>
 	</div>
 
-	<div class="value-container" ng-if="data.hum">
+	<div class="value-container" ng-if="::data.obsolete">
+		<div class="icon">
+			<i class="wi wi-na"></i>
+		</div>
+	</div>
+
+	<div class="value-container" ng-if="::data.hum">
 		<div class="icon">
 			<i class="wi wi-sprinkles"></i>
 		</div>
 
 		<div class="value">
-			{{ data.hum | number }} %
+			{{ ::data.hum | number }} %
 		</div>
 	</div>
 </div>

@@ -30,14 +30,25 @@ function save(data) {
 }
 
 function checkSaveData(data) {
-  var result = '';
-  if (isNaN(parseFloat(data.temp))) {
-    result += 'Invalid temp value: ' + data.temp + '\n'
-  }
+  var result = checkTemp(data.temp);
   if (!data.sensor) {
     result += 'Missing sensor parameter\n';
   }
   return result;
+}
+
+function checkTemp(tempStr) {
+  var temp = parseFloat(tempStr);
+
+  if (isNaN(temp)) {
+    return 'Invalid temp value: ' + tempStr + '\n';
+  }
+
+  if (temp < -40 || temp > 50) {
+    return 'Temp is out of range: ' + tempStr + '\n';
+  }
+
+  return '';
 }
 
 function getLastDay() {

@@ -3,6 +3,7 @@ var express = require('express');
 var app = express();
 var router = express.Router();
 
+var config = require('./config.js');
 var service = require('./service.js');
 
 router.get('/', function (req, res) {
@@ -79,7 +80,7 @@ function apiError(err, res) {
 app.use('/api', router);
 app.set('json spaces', 2);
 
-var server = app.listen(3636, function listen() {
+var server = app.listen(config('port'), function listen() {
   var host = server.address().address;
   var port = server.address().port;
 

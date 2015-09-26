@@ -53,5 +53,19 @@ describe('save', function() {
       .expect(/Api error/)
       .expect(400, done);
   });
+
+  it('temp out of range - neg', function(done) {
+    request(app)
+        .post('/api/weather?sensor=SSN&temp=-41')
+        .expect(/Api error/)
+        .expect(400, done);
+  });
+
+  it('temp out of range - pos', function(done) {
+    request(app)
+        .post('/api/weather?sensor=SSN&temp=51')
+        .expect(/Api error/)
+        .expect(400, done);
+  });
 });
 

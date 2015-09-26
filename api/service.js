@@ -1,7 +1,9 @@
 var util = require('util');
 var moment = require('moment');
 var q = require('q');
+var _ = require('lodash');
 
+var config = require('./config.js');
 var storage = require('./storage.js');
 
 module.exports = {
@@ -28,14 +30,25 @@ function save(data) {
 }
 
 function checkSaveData(data) {
-  var result = '';
-  if (isNaN(parseFloat(data.temp))) {
-    result += 'Invalid temp value: ' + data.temp + '\n'
-  }
+  var result = checkTemp(data.temp);
   if (!data.sensor) {
     result += 'Missing sensor parameter\n';
   }
   return result;
+}
+
+function checkTemp(tempStr) {
+  var temp = parseFloat(tempStr);
+
+  if (isNaN(temp)) {
+    return 'Invalid temp value: ' + tempStr + '\n';
+  }
+
+  if (temp < -40 || temp > 50) {
+    return 'Temp is out of range: ' + tempStr + '\n';
+  }
+
+  return '';
 }
 
 function getLastDay() {
@@ -43,14 +56,39 @@ function getLastDay() {
 }
 
 function getLatest() {
-  return getLastDay().then(getLastElement);
+  return getLastDay()
+    .then(getLastUnique)
+    .then(expandWithObsoleteInfo);
 }
 
-function getLastElement(data) {
-  if (data.length == 0) {
-    return [];
-  }
-  return [ data[data.length - 1] ];
+function getLastUnique(data) {
+  var sensorNames = findUniqueSensorNames(data);
+
+  return _.map(sensorNames, function map(sensorName) {
+    var index = _.findLastIndex(data, function find(item) {
+      return sensorName == item.sensor;
+    });
+    return data[index];
+  });
+}
+
+function findUniqueSensorNames(data) {
+  return _.chain(data)
+    .sortBy('sensor')
+    .map('sensor')
+    .uniq()
+    .value();
+}
+
+function expandWithObsoleteInfo(measurements) {
+  return _(measurements).forEach(function(m) {
+    m.obsolete = checkObsolete(m);
+  }).value();
+}
+
+function checkObsolete(measurement) {
+  var reference = moment().subtract(config('measurement:obsoleteTimeout'), 'minutes');
+  return moment(measurement.time).isBefore(reference);
 }
 
 function getInterval(from, to) {
@@ -75,10 +113,19 @@ function getInterval(from, to) {
     start.add(1, 'days');
   }
 
-  return q.all(prs).then(combineArrays);
+  return q.all(prs)
+    .then(combineArrays)
+    .then(expandWithSensors);
 }
 
 function combineArrays(arrays) {
   return Array.prototype.concat.apply([], arrays);
+}
+
+function expandWithSensors(data) {
+  return {
+    sensors: findUniqueSensorNames(data),
+    measurements: data
+  };
 }
 

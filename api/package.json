@@ -10,8 +10,10 @@
   "license": "MIT",
   "dependencies": {
     "express": "^4.13.3",
+    "lodash": "^3.10.1",
     "mkdirp": "^0.5.1",
     "moment": "^2.10.6",
+    "nconf": "^0.7.2",
     "q": "^1.4.1"
   },
   "devDependencies": {

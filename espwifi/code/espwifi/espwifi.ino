@@ -1,3 +1,5 @@
+ADC_MODE(ADC_VCC); // To alllow input voltage reading.
+
 #include <ESP8266WiFi.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
@@ -28,11 +30,14 @@ void loop() {
   readCount++;
 
   debug("Temperature: " + String(temp) + ", readCount:" + String(readCount));
+ 
+  float inputVoltage = ESP.getVcc();
+  debug("Input voltage is: " + String(inputVoltage) + " mV");
 
   if (abs(temp - lastTemp) > VALUE_CHANGE_TOLERANCE || readCount == KEEPALIVE_ON_EVERY_X_READS) {
     lastTemp = temp;
     readCount = 0;
-    sendData(temp);
+    sendData(temp, inputVoltage);
   } else {
     debug("Not sending data now.");
   }
@@ -82,7 +87,7 @@ bool isTemperatureValid(float temp) {
   return temp < 85.0 && temp > -127.0;
 }
 
-void sendData(float temp) {
+void sendData(float temp, float inputVoltage) {
   debug(String("Connecting to ") + TARGET_HOST + ":" + TARGET_PORT);
   
   WiFiClient client;
@@ -91,8 +96,11 @@ void sendData(float temp) {
     return;
   }
   
-  String url = "/api/weather?sensor=" + String(SENSOR_ID) + "&temp=" + formatNumber(temp, VALUE_DECIMAL_PLACES);
-  debug("Requesting URL: " + url);
+  String url = "/api/weather?sensor=" + String(SENSOR_ID) + 
+               "&temp=" + formatNumber(temp, VALUE_DECIMAL_PLACES) + 
+               "&inputVoltage=" + inputVoltage;
+               
+  debug("Request: " + url);
 
   client.print(String("POST ") + url + " HTTP/1.1\r\n" +
                "Host: " + TARGET_HOST + "\r\n" + 

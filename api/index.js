@@ -59,6 +59,7 @@ router.post('/weather', function handle(req, res) {
   var data = {
     time: new Date(),
     sensor: req.query.sensor,
+    inputVoltage: req.query.inputVoltage,
     temp: req.query.temp
   };
 

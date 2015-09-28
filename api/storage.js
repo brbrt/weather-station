@@ -66,8 +66,14 @@ function parseFile(fileData) {
 }
 
 function createRow(data) {
-  var timeStr = moment(data.time).format(timeFormat);
-  return timeStr + separator + data.sensor + separator + data.temp + lineSeparator;
+  var parts = [
+    moment(data.time).format(timeFormat),
+    data.sensor,
+    data.temp,
+    data.inputVoltage
+  ];
+
+  return parts.join(separator) + lineSeparator;
 }
 
 function parseRow(row) {
@@ -80,7 +86,8 @@ function parseRow(row) {
   return {
     time: moment(parts[0], timeFormat).toDate(),
     sensor: parts[1],
-    temp: parseFloat(parts[2])
+    temp: parseFloat(parts[2]),
+    inputVoltage: parseInt(parts[3])
   };
 }
 

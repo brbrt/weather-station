@@ -25,14 +25,24 @@ void setup() {
 
 void loop() {
   unsigned long start = millis();
-  
-  float temp = readtemp();
+
   readCount++;
 
-  debug("Temperature: " + String(temp) + ", readCount:" + String(readCount));
- 
   float inputVoltage = ESP.getVcc();
   debug("Input voltage is: " + String(inputVoltage) + " mV");
+
+  if (inputVoltage < INPUT_VOLTAGE_LOW_LIMIT) {
+    debug("Input voltage is under limit.");
+    
+    sendData(-200, inputVoltage);
+
+    debug("Putting system into deep sleep mode.");
+
+    ESP.deepSleep(1000000000);
+  }
+
+  float temp = readtemp();
+  debug("Temperature: " + String(temp) + ", readCount:" + String(readCount));
 
   if (abs(temp - lastTemp) > VALUE_CHANGE_TOLERANCE || readCount == KEEPALIVE_ON_EVERY_X_READS) {
     lastTemp = temp;
@@ -45,10 +55,13 @@ void loop() {
   unsigned long elapsed = millis() - start;
   debug("This loop took " + String(elapsed) + " millis.\n");
 
+
   delay(READ_INTERVAL * 1000 - elapsed);
 }
 
 void initwifi() {
+  WiFi.mode(WIFI_STA);
+  
   debug("\n\nConnecting to " + String(WIFI_SSID));
   
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);

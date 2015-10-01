@@ -9,8 +9,13 @@ ADC_MODE(ADC_VCC); // To alllow input voltage reading.
 OneWire oneWire(ONE_WIRE_PIN);
 DallasTemperature DS18B20(&oneWire);
 
-float lastTemp = -15000;
-int readCount = 0;
+
+struct SensorState
+{
+  float lastTemp = -15000;
+  int readCount = 0;
+} sensorState;
+
 
 void setup() {
   if (DEBUG_ENABLED) {
@@ -24,7 +29,7 @@ void setup() {
 void loop() {
   unsigned long start = millis();
 
-  readCount++;
+  sensorState.readCount++;
 
   float inputVoltage = ESP.getVcc();
   debug("Input voltage is: " + String(inputVoltage) + " mV");
@@ -40,11 +45,11 @@ void loop() {
   }
 
   float temp = readtemp();
-  debug("Temperature: " + String(temp) + ", readCount:" + String(readCount));
+  debug("Temperature: " + String(temp) + ", readCount:" + String(sensorState.readCount));
 
-  if (abs(temp - lastTemp) > VALUE_CHANGE_TOLERANCE || readCount == KEEPALIVE_ON_EVERY_X_READS) {
-    lastTemp = temp;
-    readCount = 0;
+  if (abs(temp - sensorState.lastTemp) > VALUE_CHANGE_TOLERANCE || sensorState.readCount == KEEPALIVE_ON_EVERY_X_READS) {
+    sensorState.lastTemp = temp;
+    sensorState.readCount = 0;
     sendData(temp, inputVoltage);
   } else {
     debug("Not sending data now.");

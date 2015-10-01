@@ -1,9 +1,11 @@
 ADC_MODE(ADC_VCC); // To alllow input voltage reading.
 
 #include <ESP8266WiFi.h>
+#include <EEPROM.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
 
+#include "eeprom_anything.h"
 #include "config.h"
 
 OneWire oneWire(ONE_WIRE_PIN);
@@ -12,22 +14,32 @@ DallasTemperature DS18B20(&oneWire);
 
 struct SensorState
 {
-  float lastTemp = -15000;
-  int readCount = 0;
+  float lastTemp;
+  int readCount;
 } sensorState;
 
 
 void setup() {
+  sensorState.lastTemp = -15000;
+  sensorState.readCount = 0;
+  
   if (DEBUG_ENABLED) {
     Serial.begin(115200);
     delay(100);
   }
+
+  EEPROM.begin(4096);
+  delay(100);
 
   debug("Setup finished\n");
 }
 
 void loop() {
   unsigned long start = millis();
+
+  loadSensorStateIfNeeded();
+
+  debug("Starting sensor state: temperature=" + String(sensorState.lastTemp) + ", readCount=" + String(sensorState.readCount));
 
   sensorState.readCount++;
 
@@ -39,13 +51,13 @@ void loop() {
     
     sendData(-200, inputVoltage);
 
-    debug("Putting system into deep sleep mode.");
+    debug("Putting system into deep sleep mode to save battery.");
 
-    ESP.deepSleep(1000000000);
+    deepSleep(1000000000);
   }
 
   float temp = readtemp();
-  debug("Temperature: " + String(temp) + ", readCount:" + String(sensorState.readCount));
+  debug("Sensor state: temperature=" + String(temp) + ", readCount=" + String(sensorState.readCount));
 
   if (abs(temp - sensorState.lastTemp) > VALUE_CHANGE_TOLERANCE || sensorState.readCount == KEEPALIVE_ON_EVERY_X_READS) {
     sensorState.lastTemp = temp;
@@ -55,9 +67,11 @@ void loop() {
     debug("Not sending data now.");
   }
 
+  saveSensorStateIfNeeded();
+
   unsigned long elapsed = millis() - start;
   debug("This loop took " + String(elapsed) + " millis.\n");
-
+  
   sleep(READ_INTERVAL * 1000 - elapsed);
 }
 
@@ -146,6 +160,21 @@ String formatNumber(float number, int decimalPlaces) {
 void debug(String message) {
   if (DEBUG_ENABLED) {
     Serial.println(message);
+    delay(10);
+  }
+}
+
+void loadSensorStateIfNeeded() {
+  if (USE_DEEP_SLEEP) {
+    debug("Loading sensorState from EEPROM.");
+    eepromReadAnything(0, sensorState);
+  }
+}
+
+void saveSensorStateIfNeeded() {
+  if (USE_DEEP_SLEEP) {
+    debug("Saving sensorState to EEPROM.");
+    eepromWriteAnything(0, sensorState);
   }
 }
 
@@ -154,10 +183,15 @@ void sleep(int millis) {
   
   if (USE_DEEP_SLEEP) {
     debug("With deep sleep.");
-    ESP.deepSleep(millis * 1000);
+    deepSleep(millis);
   } else {
     debug("With delay.");
     delay(millis);
   }
+}
+
+void deepSleep(long millis) {
+  ESP.deepSleep(millis * 1000, WAKE_RF_DISABLED);
+  delay(1000);
 }
 

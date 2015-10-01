@@ -18,8 +18,6 @@ void setup() {
     delay(100);
   }
 
-  initwifi();
-
   debug("Setup finished\n");
 }
 
@@ -55,11 +53,15 @@ void loop() {
   unsigned long elapsed = millis() - start;
   debug("This loop took " + String(elapsed) + " millis.\n");
 
-
-  delay(READ_INTERVAL * 1000 - elapsed);
+  sleep(READ_INTERVAL * 1000 - elapsed);
 }
 
-void initwifi() {
+void initWifiIfNeeded() {
+  if (WiFi.status() == WL_CONNECTED) {
+    debug("Already connected to WiFi");
+    return;
+  }
+  
   WiFi.mode(WIFI_STA);
   
   debug("\n\nConnecting to " + String(WIFI_SSID));
@@ -101,6 +103,8 @@ bool isTemperatureValid(float temp) {
 }
 
 void sendData(float temp, float inputVoltage) {
+  initWifiIfNeeded();
+  
   debug(String("Connecting to ") + TARGET_HOST + ":" + TARGET_PORT);
   
   WiFiClient client;
@@ -137,6 +141,18 @@ String formatNumber(float number, int decimalPlaces) {
 void debug(String message) {
   if (DEBUG_ENABLED) {
     Serial.println(message);
+  }
+}
+
+void sleep(int millis) {
+  debug("Going into sleep for " + String(millis) + " milliseconds.");
+  
+  if (USE_DEEP_SLEEP) {
+    debug("With deep sleep.");
+    ESP.deepSleep(millis * 1000);
+  } else {
+    debug("With delay.");
+    delay(millis);
   }
 }
 

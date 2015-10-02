@@ -1,4 +1,4 @@
-﻿<div class="reading">
+﻿<div class="reading" ng-click="showDetails = !showDetails">
 	<div class="meter-name">
 		{{ ::data.sensor }}
 	</div>
@@ -26,6 +26,25 @@
 
 		<div class="value">
 			{{ ::data.hum | number }} %
+		</div>
+	</div>
+
+	<div ng-if="showDetails" class="details-container">
+		<div class="icon">
+			<i class="wi wi-time-2"></i>
+		</div>
+
+		<div class="value">
+			{{ ::data.time | date:'HH:mm:ss' }}
+		</div>
+
+
+		<div class="icon">
+			<i class="wi wi-lightning"></i>
+		</div>
+
+		<div class="value">
+			{{ ::data.inputVoltage }} mV
 		</div>
 	</div>
 </div>

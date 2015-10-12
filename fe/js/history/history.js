@@ -2,6 +2,7 @@ angular
     .module('weatherStation.history', [
         'ui.router',
 
+        'weatherStation.history.chartLegend',
         'weatherStation.history.dygChart',
         'weatherStation.history.historySrv'
     ])
@@ -17,7 +18,8 @@ function historyConfig($stateProvider) {
     });
 }
 
-function historyCtrl($log,
+function historyCtrl($scope,
+                     $log,
                      historySrv) {
     var vm = this;
 
@@ -54,9 +56,9 @@ function historyCtrl($log,
                     connectSeparatedPoints: true
                 });
 
-                vm.legend = createLegend(data);
-
                 $log.debug('History data:', data);
+
+                $scope.$broadcast('chartConfigured', data);
 			},
 			function error(err) {
 				vm.isLoading = false;
@@ -64,19 +66,5 @@ function historyCtrl($log,
 			}
 		);
 	}
-
-    function createLegend(config) {
-        var legend = [];
-
-        for (var i = 0; i < config.colors.length; i++) {
-            var item = {
-                color: config.colors[i],
-                label: config.labels[i + 1],
-            };
-            legend.push(item);
-        }
-
-        return legend;
-    }
 
 }

@@ -47,14 +47,6 @@ function historyCtrl($scope,
 		historySrv.getInterval(vm.params).then(
 			function success(data) {
 				vm.isLoading = false;
-				vm.sensorData = data;
-
-                vm.dygApi.refresh(data.data, { 
-                    labels: data.labels,
-                    colors: data.colors,
-                    strokeWidth: 2,
-                    connectSeparatedPoints: true
-                });
 
                 $log.debug('History data:', data);
 

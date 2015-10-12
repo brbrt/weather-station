@@ -12,5 +12,13 @@
     </form>
 
     <dyg-chart api="vm.dygApi"></dyg-chart>
+
+    <ul class="chart-legend">
+        <li ng-repeat="l in vm.legend">
+            <div class="color-vis" ng-style="{'background-color' : l.color}">
+            </div>
+            {{ ::l.label }}
+        </li>
+    </ul>
 </div>
 

@@ -29,6 +29,8 @@ function historyCtrl($log,
 
 	vm.query = query;
 
+    vm.legend = [];
+
 	init();
 
 	///////////////////
@@ -47,8 +49,12 @@ function historyCtrl($log,
 
                 vm.dygApi.refresh(data.data, { 
                     labels: data.labels,
+                    colors: data.colors,
+                    strokeWidth: 2,
                     connectSeparatedPoints: true
                 });
+
+                vm.legend = createLegend(data);
 
                 $log.debug('History data:', data);
 			},
@@ -58,4 +64,19 @@ function historyCtrl($log,
 			}
 		);
 	}
+
+    function createLegend(config) {
+        var legend = [];
+
+        for (var i = 0; i < config.colors.length; i++) {
+            var item = {
+                color: config.colors[i],
+                label: config.labels[i + 1],
+            };
+            legend.push(item);
+        }
+
+        return legend;
+    }
+
 }

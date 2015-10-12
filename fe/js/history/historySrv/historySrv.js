@@ -1,9 +1,12 @@
 angular
     .module('weatherStation.history.historySrv', [
+        'weatherStation.history.colorSrv'
     ])
     .factory('historySrv', historySrv);
 
-function historySrv($http) {
+function historySrv($http,
+                    colorSrv) {
+
     var url = '/api/weather/interval';
     var queryDateFormat = 'YYYY-MM-DD'
 
@@ -46,6 +49,7 @@ function historySrv($http) {
         }
 
         return {
+            colors: colorSrv.getColors(labels.length - 1),
             labels: labels,
             data: data
         };

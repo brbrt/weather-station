@@ -1,35 +1,21 @@
 #ifndef Sensor_h
 #define Sensor_h
 
-#include <OneWire.h>
-#include <DallasTemperature.h>
-
 class Sensor {
   public:   
-    void init(); 
-    float read();    
+    virtual void init() {
+    }
     
-    Sensor(int pin_);
+    virtual float read() {
+      return -11111111;    
+    }
+    
+    Sensor(int pin_) {
+      pin = pin_;
+    }
 
   protected:
     int pin;
-
-  private:
-    DallasTemperature *dt;
-};
-
-Sensor::Sensor(int pin_) {
-  pin = pin_;
-};
-
-void Sensor::init() {
-  OneWire oneWire(pin);
-  dt = new DallasTemperature(&oneWire);
-};
-
-float Sensor::read() {
-  dt->requestTemperatures(); 
-  return dt->getTempCByIndex(0);
 };
 
 #endif

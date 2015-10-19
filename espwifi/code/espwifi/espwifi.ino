@@ -5,14 +5,17 @@ ADC_MODE(ADC_VCC); // To alllow input voltage reading.
 
 #include <OneWire.h>
 #include <DallasTemperature.h>
+#include "DHT.h"
 
 
 #include "eeprom_anything.h"
 #include "Sensor.h"
 #include "Ds18b20Sensor.h"
+#include "DhtSensor.h"
 #include "config.h"
 
-Ds18b20Sensor sensor(ONE_WIRE_PIN);
+//Ds18b20Sensor sensor(ONE_WIRE_PIN);
+DhtSensor sensor(ONE_WIRE_PIN);
 
 struct SensorState
 {

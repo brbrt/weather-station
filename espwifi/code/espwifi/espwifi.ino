@@ -2,15 +2,16 @@ ADC_MODE(ADC_VCC); // To alllow input voltage reading.
 
 #include <ESP8266WiFi.h>
 #include <EEPROM.h>
+
 #include <OneWire.h>
 #include <DallasTemperature.h>
 
+
 #include "eeprom_anything.h"
+#include "Sensor.h"
 #include "config.h"
 
-OneWire oneWire(ONE_WIRE_PIN);
-DallasTemperature DS18B20(&oneWire);
-
+Sensor sensor(ONE_WIRE_PIN);
 
 struct SensorState
 {
@@ -19,7 +20,9 @@ struct SensorState
 } sensorState;
 
 
-void setup() {
+void setup() { 
+  sensor.init();
+  
   sensorState.lastTemp = -15000;
   sensorState.readCount = 0;
   
@@ -104,10 +107,9 @@ float readtemp() {
     if (retryCount > 5) {
       return -100;
     }
-    
-    DS18B20.requestTemperatures(); 
-    temp = DS18B20.getTempCByIndex(0);
 
+    temp = sensor.read();
+    
     debug("Raw temperature: " + String(temp) + "  ");
     retryCount++;
   } while (!isTemperatureValid(temp));

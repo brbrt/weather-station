@@ -13,9 +13,14 @@ class Ds18b20Sensor : public Sensor {
       dt = new DallasTemperature(&oneWire); 
     }
     
-    float read() {
+    Reading* read() {
+      Reading *r = new Reading();      
+      
       dt->requestTemperatures(); 
-      return dt->getTempCByIndex(0);  
+      
+      r->temperature = dt->getTempCByIndex(0);;
+      
+      return r;    
     }
     
     Ds18b20Sensor(int pin_) : Sensor(pin_) {}

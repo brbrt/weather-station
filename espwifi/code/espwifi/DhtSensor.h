@@ -12,8 +12,10 @@ class DhtSensor : public Sensor {
       dht->begin();
     }
     
-    float read() {
-      return dht->readTemperature();
+    Reading* read() {
+      Reading *r = new Reading();
+      r->temperature = dht->readTemperature();
+      return r;    
     }
     
     DhtSensor(int pin_) : Sensor(pin_) {}

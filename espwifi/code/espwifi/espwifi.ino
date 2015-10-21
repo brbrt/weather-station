@@ -63,7 +63,7 @@ void loop() {
     deepSleep(1000000000);
   }
 
-  float temp = readtemp();
+  float temp = readSensor();
   debug("Sensor state: temperature=" + String(temp) + ", readCount=" + String(sensorState.readCount));
 
   if (abs(temp - sensorState.lastTemp) > VALUE_CHANGE_TOLERANCE || sensorState.readCount == KEEPALIVE_ON_EVERY_X_READS) {
@@ -102,7 +102,7 @@ void initWifiIfNeeded() {
   debug("\nWiFi connected. IP address: " + WiFi.localIP());  
 }
 
-float readtemp() {
+float readSensor() {
   int retryCount = 0;
   
   float temp; 
@@ -112,7 +112,8 @@ float readtemp() {
       return -100;
     }
 
-    temp = sensor.read();
+    Reading *r = sensor.read();
+    temp = r->temperature;
     
     debug("Raw temperature: " + String(temp) + "  ");
     retryCount++;

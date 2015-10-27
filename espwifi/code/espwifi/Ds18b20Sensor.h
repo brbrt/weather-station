@@ -4,6 +4,7 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 
+#include "ErrorCodes.h"
 #include "Sensor.h"
 
 class Ds18b20Sensor : public Sensor {
@@ -18,9 +19,15 @@ class Ds18b20Sensor : public Sensor {
       
       dt->requestTemperatures(); 
       
-      r->temperature = dt->getTempCByIndex(0);;
+      r->temperature = dt->getTempCByIndex(0);
+      r->humidity = HUMIDITY_NOT_SUPPORTED;
       
       return r;    
+    }
+
+    bool isValid(Reading* r) {
+      float temp = r->temperature;
+      return temp < 50.0 && temp > -50.0;
     }
     
     Ds18b20Sensor(int pin_) : Sensor(pin_) {}

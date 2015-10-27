@@ -15,7 +15,14 @@ class DhtSensor : public Sensor {
     Reading* read() {
       Reading *r = new Reading();
       r->temperature = dht->readTemperature();
+      r->humidity = dht->readHumidity();
       return r;    
+    }
+
+    bool isValid(Reading* r) {
+      float temp = r->temperature;
+      float hum = r->humidity;
+      return !isnan(temp) && !isnan(hum);
     }
     
     DhtSensor(int pin_) : Sensor(pin_) {}

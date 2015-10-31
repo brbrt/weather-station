@@ -48,6 +48,10 @@ header {
     padding-right: 0.25em;
 }
 
+.menu .active {
+    color: #e87d0d;
+}
+
 .content {
     margin: 0.25em;
 }

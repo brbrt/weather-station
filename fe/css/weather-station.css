@@ -9,12 +9,15 @@ header {
     color: white;
 }
 
-.page-title {
+.brand {
     display: inline-block;
     margin-left: 0.25em ;
     margin-right: 0.5em ;
-    font-weight: bold;
-    text-transform: uppercase;
+}
+
+.brand-image {
+    height: 1em;
+    vertical-align: middle;
 }
 
 .menu {
@@ -36,12 +39,17 @@ header {
     text-decoration: none;
 }
 
+.menu li a:hover {
+    color: #e87d0d;
+    transition: color 200ms linear;
+}
+
 .menu .icon {
     padding-right: 0.25em;
 }
 
 .content {
-    margin: 5px;
+    margin: 0.25em;
 }
 
 .refresh-button {
@@ -59,7 +67,8 @@ header {
 	width: 275px;
 	background-color: rgb(0, 87, 163);
 	color: white;
-	padding: 5px;
+	padding: 0.25em;
+    cursor: pointer;
 }
 
 .reading  .meter-name {
@@ -87,7 +96,7 @@ header {
 
 .measure-date {
 	color: rgb(0, 87, 163);
-	padding-top: 10px;
+	padding-top: 0.25em;
 }
 
 .chart-legend {
@@ -97,7 +106,7 @@ header {
 
 .chart-legend li {
     display: inline-block;
-    padding-right: 20px;
+    padding-right: 1em;
 }
 
 .chart-legend .color-vis {
@@ -116,14 +125,13 @@ header {
 }
 
 .history-controls {
-	padding-bottom: 15px;
+	padding-bottom: 0.75em;
 }
 
 .input-container {
-	margin-right: 15px;
+	margin-right: 0.75em;
 }
 
 input {
-	padding: 4px;
+	padding: 0.25em;
 }
-

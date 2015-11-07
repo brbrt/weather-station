@@ -1,4 +1,3 @@
-var util = require('util');
 var express = require('express');
 var app = express();
 var router = express.Router();
@@ -55,7 +54,7 @@ router.get('/weather/interval', function handle(req, res) {
 });
 
 router.post('/weather', function handle(req, res) {
-  log.debug('Got measurement from ' + req.ip + ' ' + util.inspect(req.query));
+  log.debug('Got measurement from ' + req.ip, req.query);
 
   var data = {
     time: new Date(),
@@ -75,7 +74,7 @@ router.post('/weather', function handle(req, res) {
 });
 
 function apiError(err, res) {
-  log.info('Api error:' + util.inspect(err));
+  log.info('Api error: ', err);
   res.status(400).send('Api error.\n' + err + '\n');
 }
 

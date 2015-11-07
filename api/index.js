@@ -4,6 +4,7 @@ var app = express();
 var router = express.Router();
 
 var config = require('./config.js');
+var log = require('./logger.js');
 var service = require('./service.js');
 
 router.get('/', function (req, res) {
@@ -54,7 +55,7 @@ router.get('/weather/interval', function handle(req, res) {
 });
 
 router.post('/weather', function handle(req, res) {
-  console.log('Got measurement from ' + req.ip + ' ' + util.inspect(req.query));
+  log.debug('Got measurement from ' + req.ip + ' ' + util.inspect(req.query));
 
   var data = {
     time: new Date(),
@@ -74,8 +75,8 @@ router.post('/weather', function handle(req, res) {
 });
 
 function apiError(err, res) {
-  console.log('Api error:' + util.inspect(err));
-  res.status(400).send('Api error.\n');
+  log.info('Api error:' + util.inspect(err));
+  res.status(400).send('Api error.\n' + err + '\n');
 }
 
 app.use('/api', router);
@@ -85,7 +86,7 @@ var server = app.listen(config('port'), function listen() {
   var host = server.address().address;
   var port = server.address().port;
 
-  console.log('weather station api is listening at http://%s:%s', host, port);
+  log.info('weather station api is listening at http://%s:%s', host, port);
 });
 
 module.exports = server;

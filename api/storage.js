@@ -5,6 +5,8 @@ var mkdirp = require('mkdirp');
 var moment = require('moment');
 var q = require('q');
 
+var log = require('./logger.js');
+
 module.exports = {
   save: save,
   get: get
@@ -20,13 +22,13 @@ function save(data) {
 
   mkdirp(df.dir, function mkdirdone(err) {
     if (err) {
-      console.log('Error creating dir: ' + err);
+      log.error('Error creating dir: ' + err);
       return;
     }
 
     fs.appendFile(path.resolve(df.dir, df.file), row, function done(err) {
       if (err) {
-        console.log('Error writing data: ' + err);
+          log.error('Error writing data: ' + err);
       }
     });
   });

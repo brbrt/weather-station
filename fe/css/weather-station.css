@@ -1,31 +1,68 @@
 body {
 	font-family: 'Ubuntu', sans-serif;
+    margin: 0;
 }
 
-.page-title {
-	color: rgb(0, 87, 163);
+header {
+    background-color: rgb(0, 87, 163);
+    padding: 0.75em;
+    color: white;
 }
 
-ul.menu {
+.brand {
+    display: inline-block;
+    margin-left: 0.25em ;
+    margin-right: 0.5em ;
+}
+
+.brand-image {
+    height: 1em;
+    vertical-align: middle;
+}
+
+.menu {
     list-style-type: none;
     padding-left: 0;
+    margin: 0;
+	display: inline-block;
+
 }
 
-ul.menu li {
+.menu li {
     display: inline-block;
-    margin-right: 1em;
+    margin: 0 0.5em;
 }
 
-ul.menu li a {
-    padding: 0.25em;
+.menu li a {
+    padding: 0.5em;
+	color: white;
+    text-decoration: none;
+}
+
+.menu li a:hover {
+    color: #e87d0d;
+    transition: color 200ms linear;
+}
+
+.menu .icon {
+    padding-right: 0.25em;
+}
+
+.menu .active {
+    color: #e87d0d;
+}
+
+.content {
+    margin: 0.25em;
 }
 
 .refresh-button {
-	border: 0px;
+	border: 0;
+    color: rgb(0, 87, 163);
 	background-color: transparent;
 	cursor: pointer;
-	font-size: 28px;
-	color: rgb(0, 87, 163);
+    font-size: 2em;
+    vertical-align: middle;
 }
 
 .reading {
@@ -34,7 +71,8 @@ ul.menu li a {
 	width: 275px;
 	background-color: rgb(0, 87, 163);
 	color: white;
-	padding: 5px;
+	padding: 0.25em;
+    cursor: pointer;
 }
 
 .reading  .meter-name {
@@ -44,11 +82,11 @@ ul.menu li a {
 	text-align: center;
 }
 
-.reading  .value-container {
+.reading .value-container {
 	display: inline-block;
 }
 
-.reading  .icon {
+.reading .icon {
 	display: inline-block;
 	vertical-align: middle;
 	margin-left: 15px;
@@ -62,7 +100,7 @@ ul.menu li a {
 
 .measure-date {
 	color: rgb(0, 87, 163);
-	padding-top: 10px;
+	padding-top: 0.25em;
 }
 
 .chart-legend {
@@ -72,7 +110,7 @@ ul.menu li a {
 
 .chart-legend li {
     display: inline-block;
-    padding-right: 20px;
+    padding-right: 1em;
 }
 
 .chart-legend .color-vis {
@@ -85,8 +123,19 @@ ul.menu li a {
     border-radius: 2px;
 }
 
-
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak],
-.ng-cloak, .x-ng-cloak,
+.ng-cloak, .x-ng-cloak {
   display: none !important;
+}
+
+.history-controls {
+	padding-bottom: 0.75em;
+}
+
+.input-container {
+	margin-right: 0.75em;
+}
+
+input {
+	padding: 0.25em;
 }

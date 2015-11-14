@@ -97,8 +97,6 @@ function getInterval(from, to) {
   var start = moment(from, format).startOf('day');
   var end = moment(to, format).startOf('day');
 
-  console.log('Query between ' + start.toDate() + ' - ' + end.toDate());
-
   if (!start.isValid() || !end.isValid()) {
     return q.fcall(function error() {
       throw new Error('Invalid input.');

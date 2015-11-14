@@ -13,16 +13,30 @@
 </head>
 
 <body>
-  <h1 class="page-title">
-      Időjárás állomás
-  </h1>
 
-  <ul class="menu">
-    <li><a ui-sref="latest">Aktuális</a></li>
-    <li><a ui-sref="history">Történet</a></li>
-  </ul>
+  <header>
+    <span class="brand">
+        <img class="brand-image" src="cloud.png">
+    </span>
 
-  <div ui-view></div>
+    <ul class="menu">
+      <li>
+        <a ui-sref="latest" ui-sref-active="active">
+          <i class="icon wi wi-time-2"></i>
+          Aktuális
+        </a>
+      </li>
+      <li>
+        <a ui-sref="history" ui-sref-active="active">
+          <i class="icon wi wi-earthquake"></i>
+          Történet
+        </a>
+      </li>
+    </ul>
+  </header>
+
+
+  <div ui-view class="content"></div>
 
   <script src="bower_components/angular/angular.js"></script>
   <script src="bower_components/ui-router/release/angular-ui-router.js"></script>

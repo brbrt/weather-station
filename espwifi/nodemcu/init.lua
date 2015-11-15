@@ -12,7 +12,7 @@ tmr.alarm(1, 1000, 1, function()
   else
     tmr.stop(1)
     print("Connected! The assigned IP address is " .. wifi.sta.getip())
-    
-    --dofile ("domoticz.lua")
+
+    dofile('app.lua');
   end
 end)

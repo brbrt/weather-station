@@ -28,6 +28,8 @@ end
 
 
 local function upload(input_voltage, temp, task)
+    print("Uploading measurement to server")
+
     local conn=net.createConnection(net.TCP, 0)
     conn:on("receive", task)
     conn:connect(conf.target_port, conf.target_host)

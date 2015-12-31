@@ -77,22 +77,34 @@ void loop() {
 
 void initWifiIfNeeded() {
   if (WiFi.status() == WL_CONNECTED) {
-    debug("Already connected to WiFi");
+    debug("Already connected to WiFi.");
     return;
   }
+
+  resetWifiConnection();
   
+  int connectionAttempts = 0;
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+    debug(".");
+    connectionAttempts++;
+
+    if (connectionAttempts % 15 == 0) {
+      debug("Maximum connection timeout is reached. Waiting and trying to reset the connection.");
+      delay(60000);
+      resetWifiConnection();
+    }
+  }
+
+  debug("Connected to WiFi. IP address: " + WiFi.localIP());  
+}
+
+void resetWifiConnection() {
+  WiFi.disconnect();
   WiFi.mode(WIFI_STA);
   
   debug("\n\nConnecting to " + String(WIFI_SSID));
-  
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-  
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    debug(".");
-  }
-
-  debug("\nWiFi connected. IP address: " + WiFi.localIP());  
 }
 
 float readtemp() {

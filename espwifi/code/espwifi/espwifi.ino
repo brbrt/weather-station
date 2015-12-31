@@ -2,36 +2,24 @@ ADC_MODE(ADC_VCC); // To alllow input voltage reading.
 
 #include <ESP8266WiFi.h>
 #include <EEPROM.h>
-
 #include <OneWire.h>
 #include <DallasTemperature.h>
-#include "DHT.h"
-
 
 #include "eeprom_anything.h"
-#include "ErrorCodes.h"
-#include "Sensor.h"
-#include "Ds18b20Sensor.h"
-#include "DhtSensor.h"
 #include "config.h"
 
-//Ds18b20Sensor sensor(ONE_WIRE_PIN);
-DhtSensor sensor(ONE_WIRE_PIN);
+OneWire oneWire(ONE_WIRE_PIN);
+DallasTemperature DS18B20(&oneWire);
+
 
 struct SensorState
 {
   float lastTemp;
   int readCount;
-
-  String str() {
-    return "lastTemp=" + String(lastTemp) + ", readCount=" +String(readCount);
-  }
 } sensorState;
 
 
-void setup() { 
-  sensor.init();
-  
+void setup() {
   sensorState.lastTemp = -15000;
   sensorState.readCount = 0;
   
@@ -51,7 +39,7 @@ void loop() {
 
   loadSensorStateIfNeeded();
 
-  debug("Starting sensor state: " + sensorState.str());
+  debug("Starting sensor state: temperature=" + String(sensorState.lastTemp) + ", readCount=" + String(sensorState.readCount));
 
   sensorState.readCount++;
 
@@ -61,28 +49,23 @@ void loop() {
   if (inputVoltage < INPUT_VOLTAGE_LOW_LIMIT) {
     debug("Input voltage is under limit.");
     
-    sendData(INPUT_VOLTAGE_UNDER_LIMIT, INPUT_VOLTAGE_UNDER_LIMIT, inputVoltage);
+    sendData(-200, inputVoltage);
 
     debug("Putting system into deep sleep mode to save battery.");
 
     deepSleep(1000000000);
   }
 
-  Reading* r = sensor.readValid(5);
-  debug("Measurement: " + r->str());
-  float temp = r->temperature;
+  float temp = readtemp();
+  debug("Sensor state: temperature=" + String(temp) + ", readCount=" + String(sensorState.readCount));
 
   if (abs(temp - sensorState.lastTemp) > VALUE_CHANGE_TOLERANCE || sensorState.readCount == KEEPALIVE_ON_EVERY_X_READS) {
     sensorState.lastTemp = temp;
     sensorState.readCount = 0;
-    sendData(temp, r->humidity, inputVoltage);
+    sendData(temp, inputVoltage);
   } else {
     debug("Not sending data now.");
   }
-
-  delete r;
-
-  debug("Sensor state: " + sensorState.str());
 
   saveSensorStateIfNeeded();
 
@@ -111,8 +94,34 @@ void initWifiIfNeeded() {
 
   debug("\nWiFi connected. IP address: " + WiFi.localIP());  
 }
- 
-void sendData(float temperature, float humidity, float inputVoltage) {
+
+float readtemp() {
+  int retryCount = 0;
+  
+  float temp; 
+  
+  do {   
+    if (retryCount > 5) {
+      return -100;
+    }
+    
+    DS18B20.requestTemperatures(); 
+    temp = DS18B20.getTempCByIndex(0);
+
+    debug("Raw temperature: " + String(temp) + "  ");
+    retryCount++;
+  } while (!isTemperatureValid(temp));
+
+  debug("");
+
+  return temp;
+}
+
+bool isTemperatureValid(float temp) {
+  return temp < 85.0 && temp > -127.0;
+}
+
+void sendData(float temp, float inputVoltage) {
   initWifiIfNeeded();
   
   debug(String("Connecting to ") + TARGET_HOST + ":" + TARGET_PORT);
@@ -124,12 +133,8 @@ void sendData(float temperature, float humidity, float inputVoltage) {
   }
   
   String url = "/api/weather?sensor=" + String(SENSOR_ID) + 
-               "&inputVoltage=" + inputVoltage +
-               "&temp=" + formatNumber(temperature, VALUE_DECIMAL_PLACES);
-
-  if (humidity != HUMIDITY_NOT_SUPPORTED) {
-    url += "&humidity=" + formatNumber(humidity, VALUE_DECIMAL_PLACES);
-  }
+               "&temp=" + formatNumber(temp, VALUE_DECIMAL_PLACES) + 
+               "&inputVoltage=" + inputVoltage;
                
   debug("Request: " + url);
 

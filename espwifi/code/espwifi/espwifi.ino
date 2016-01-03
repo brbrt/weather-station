@@ -45,6 +45,7 @@ void loop() {
 
   float inputVoltage = ESP.getVcc();
   debug("Input voltage is: " + String(inputVoltage) + " mV");
+  delay(250);
 
   if (inputVoltage < INPUT_VOLTAGE_LOW_LIMIT) {
     debug("Input voltage is under limit.");
@@ -86,11 +87,12 @@ void initWifiIfNeeded() {
   int connectionAttempts = 0;
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
-    debug(".");
+    debug("Waiting... (Current status: " + String(WiFi.status()) + ")");
     connectionAttempts++;
 
     if (connectionAttempts % 15 == 0) {
       debug("Maximum connection timeout is reached. Waiting and trying to reset the connection.");
+      WiFi.disconnect();
       delay(60000);
       resetWifiConnection();
     }
@@ -100,7 +102,6 @@ void initWifiIfNeeded() {
 }
 
 void resetWifiConnection() {
-  WiFi.disconnect();
   WiFi.mode(WIFI_STA);
   
   debug("\n\nConnecting to " + String(WIFI_SSID));

@@ -92,7 +92,7 @@ void initWifiIfNeeded() {
 
     if (connectionAttempts % 15 == 0) {
       debug("Maximum connection timeout is reached. Waiting and trying to reset the connection.");
-      WiFi.disconnect();
+      disconnectWifi();
       delay(60000);
       resetWifiConnection();
     }
@@ -101,8 +101,16 @@ void initWifiIfNeeded() {
   debug("Connected to WiFi. IP address: " + WiFi.localIP());  
 }
 
+void disconnectWifi() {
+  debug("Disconnecting from wireless network.");
+  WiFi.disconnect();
+  delay(1000);
+}
+
 void resetWifiConnection() {
   WiFi.mode(WIFI_STA);
+
+  delay(1000);
   
   debug("\n\nConnecting to " + String(WIFI_SSID));
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
@@ -160,8 +168,10 @@ void sendData(float temp, float inputVoltage) {
     String line = client.readStringUntil('\r');
     debug(line);
   }
+
+  disconnectWifi();
   
-  debug("");
+  debug("Finished sending data to server.");
 }
 
 String formatNumber(float number, int decimalPlaces) {

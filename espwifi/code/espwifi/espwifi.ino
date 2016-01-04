@@ -94,7 +94,7 @@ void initWifiIfNeeded() {
       debug("Maximum connection timeout is reached. Waiting and trying to reset the connection.");
       disconnectWifi();
       delay(60000);
-      resetWifiConnection();
+      ESP.restart();
     }
   }
 
@@ -169,8 +169,6 @@ void sendData(float temp, float inputVoltage) {
     debug(line);
   }
 
-  disconnectWifi();
-  
   debug("Finished sending data to server.");
 }
 

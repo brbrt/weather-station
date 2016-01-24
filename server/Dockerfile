@@ -3,11 +3,19 @@ FROM ubuntu:trusty
 RUN apt-get update
 RUN apt-get install -y git nodejs npm
 
+RUN ln -s /usr/bin/nodejs /usr/bin/node
 RUN npm install -g bower
+
+ADD package.json /tmp/npm/package.json
+RUN cd /tmp/npm && npm install
+RUN mkdir -p /data && cp -a /tmp/npm/node_modules /data
+
+ADD public/bower.json /tmp/bower/bower.json
+RUN cd /tmp/bower && bower install --allow-root
+RUN cp -a /tmp/bower /data/public
 
 ADD . /data
 WORKDIR /data
 
-CMD "./build.sh"
 EXPOSE 3636
-CMD ["nodejs", "index.js"]
+CMD ["node", "index.js"]

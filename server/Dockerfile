@@ -18,4 +18,4 @@ ADD . /webapp
 WORKDIR /webapp
 
 EXPOSE 3636
-CMD ["node", "index.js", "--storagePath", "/weatherdata", "--obsoleteTimeout", "120"]
+CMD ["node", "index.js", "--storagePath", "/weatherdata", "--measurement:obsoleteTimeout", "120"]

@@ -5,6 +5,7 @@ var mkdirp = require('mkdirp');
 var moment = require('moment');
 var q = require('q');
 
+var config = require('./config.js');
 var log = require('./logger.js');
 
 module.exports = {
@@ -97,7 +98,7 @@ function calculateFileName(time) {
   var mtime = moment(time);
 
   return {
-    dir: path.resolve(__dirname, 'weather', mtime.format('YYYY/MM')),
+    dir: path.resolve(__dirname, config('storagePath'), mtime.format('YYYY/MM')),
     file: mtime.format('YYYY-MM-DD') + '.csv'
   };
 }

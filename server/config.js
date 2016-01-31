@@ -19,6 +19,7 @@ nconf.defaults({
     port: 3636,
     measurement: {
         obsoleteTimeout: 30
-    }
+    },
+    storagePath: 'weather'
 });
 

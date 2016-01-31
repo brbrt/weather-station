@@ -2,13 +2,13 @@ server {
     listen 80;
 
     location / {
-        root /var/www/weather-station/fe;
-    }
-
-    location /api {
-        proxy_pass http://127.0.0.1:2000;
+        proxy_pass http://127.0.0.1:3636;
 
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
+
+        limit_except GET {
+            deny  all;
+        }
     }
 }

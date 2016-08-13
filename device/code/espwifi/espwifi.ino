@@ -189,6 +189,10 @@ void loadSensorStateIfNeeded() {
   if (USE_DEEP_SLEEP) {
     debug("Loading sensorState from EEPROM.");
     eepromReadAnything(0, sensorState);
+  
+    if (isnan(sensorState.lastTemp)) {
+      sensorState.lastTemp = 9999;
+    }
   }
 }
 

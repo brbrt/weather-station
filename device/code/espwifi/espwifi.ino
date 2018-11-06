@@ -58,9 +58,12 @@ void loop() {
   }
 
   float temp = readtemp();
-  debug("Sensor state: temperature=" + String(temp) + ", readCount=" + String(sensorState.readCount));
+  debug("Current temperature=" + String(temp) + ", readCount=" + String(sensorState.readCount));
+  
+  float diff = temp - sensorState.lastTemp;
+  debug("Temperature difference since last reading=" + formatNumber(diff, 2));
 
-  if (abs(temp - sensorState.lastTemp) > VALUE_CHANGE_TOLERANCE || sensorState.readCount == KEEPALIVE_ON_EVERY_X_READS) {
+  if (absolute(diff) > VALUE_CHANGE_TOLERANCE || sensorState.readCount == KEEPALIVE_ON_EVERY_X_READS) {
     sensorState.lastTemp = temp;
     sensorState.readCount = 0;
     sendData(temp, inputVoltage);
@@ -172,6 +175,14 @@ void sendData(float temp, float inputVoltage) {
   debug("Finished sending data to server.");
 }
 
+float absolute(float value) {
+  if (value < 0) {
+    return -value;
+  }
+
+  return value;
+}
+
 String formatNumber(float number, int decimalPlaces) {
   char charTemp[10];
   dtostrf(number, 1, decimalPlaces, charTemp);
@@ -219,4 +230,3 @@ void deepSleep(long millis) {
   ESP.deepSleep(millis * 1000, WAKE_RF_DISABLED);
   delay(1000);
 }
-

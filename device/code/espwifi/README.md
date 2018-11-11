@@ -1,0 +1,3 @@
+- Install & open Arduino IDE
+- In Board Manager, install ESP8266
+- Install the following libraries:  OneWire, DallasTemperature

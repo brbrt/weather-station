@@ -11,7 +11,7 @@ function getConfig(key) {
 
 // First consider commandline arguments and environment variables, respectively.
 // E.g. node index.js --port 13131
-nconf.argv().env();
+nconf.argv().env({ lowerCase: true, separator: '_', });
 
 
 // Provide default values for settings not provided above.

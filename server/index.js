@@ -4,6 +4,7 @@ var router = express.Router();
 
 var config = require('./config.js');
 var log = require('./logger.js');
+var notifier = require('./notifier.js');
 var service = require('./service.js');
 
 router.get('/', function (req, res) {
@@ -20,7 +21,7 @@ router.get('/weather/latest', function handle(req, res) {
     .then(
       function success(data) {
         res.json(data);
-      }, 
+      },
       function error(err) {
         apiError(err, res);
       }
@@ -33,7 +34,7 @@ router.get('/weather/lastday', function handle(req, res) {
     .then(
       function success(data) {
         res.json(data);
-      }, 
+      },
       function error(err) {
         apiError(err, res);
       }
@@ -46,7 +47,7 @@ router.get('/weather/interval', function handle(req, res) {
     .then(
       function success(data) {
         res.json(data);
-      }, 
+      },
       function error(err) {
         apiError(err, res);
       }
@@ -66,8 +67,9 @@ router.post('/weather', function handle(req, res) {
   service.save(data).then(
     function success(data) {
       res.send(data + '\n');
-    }, 
+    },
     function error(err) {
+      notifier.sendInvalidRequestNotification(data, err);
       apiError(err, res);
     }
   );

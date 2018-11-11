@@ -6,6 +6,8 @@ var send = require('gmail-send')({
   to:   config('mail:recipient'),
 });
 
+log.debug('Sending mails to ' + config('mail:recipient'));
+
 module.exports = {
   sendInvalidRequestNotification: sendInvalidRequestNotification,
 };
@@ -13,7 +15,7 @@ module.exports = {
 function sendInvalidRequestNotification(data, error) {
   log.debug('Sending invalid request notification.');
 
-  var text = error + "\n\n" + JSON.stringify(data, null, 4);
+  var text = error + "\n" + JSON.stringify(data, null, 4);
 
   send({
     subject: 'Weather station invalid request notification',

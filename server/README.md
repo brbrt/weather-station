@@ -2,13 +2,15 @@
 Build docker container:
 sudo docker build -t weather-station .
 
+Set the required environment variables
+
 Run it:
-sudo docker run
+sudo docker run \
 -v /storage/shared/weatherdata/:/weatherdata \
 -p 3636:3636 \
--e MAIL_SENDER_USER \
--e MAIL_SENDER_PASS \
--e MAIL_RECIPIENT \
+-e MAIL_SENDER_USER=$WEATHER_STATION_MAIL_SENDER_USER \
+-e MAIL_SENDER_PASS=$WEATHER_STATION_MAIL_SENDER_PASS \
+-e MAIL_RECIPIENT=$WEATHER_STATION_MAIL_RECIPIENT \
 weather-station
 
 In background, with automatic restart
@@ -16,9 +18,9 @@ sudo docker run \
 -d --restart unless-stopped \
 -v /storage/shared/weatherdata/:/weatherdata \
 -p 3636:3636 \
--e MAIL_SENDER_USER \
--e MAIL_SENDER_PASS \
--e MAIL_RECIPIENT \
+-e MAIL_SENDER_USER=$WEATHER_STATION_MAIL_SENDER_USER \
+-e MAIL_SENDER_PASS=$WEATHER_STATION_MAIL_SENDER_PASS \
+-e MAIL_RECIPIENT=$WEATHER_STATION_MAIL_RECIPIENT \
 weather-station
 
 # Testing

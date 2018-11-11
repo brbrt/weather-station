@@ -1,9 +1,6 @@
-FROM ubuntu:trusty
+FROM node:8.12.0-alpine
 
-RUN apt-get update
-RUN apt-get install -y git nodejs npm
-
-RUN ln -s /usr/bin/nodejs /usr/bin/node
+RUN apk add --no-cache git
 RUN npm install -g bower
 
 ADD package.json /tmp/npm/package.json

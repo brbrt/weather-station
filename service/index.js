@@ -81,7 +81,6 @@ function apiError(err, res) {
 }
 
 app.use('/api', router);
-app.use(express.static('public'));
 app.set('json spaces', 2);
 
 var server = app.listen(config('port'), function listen() {

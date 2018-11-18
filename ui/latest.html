@@ -1,0 +1,102 @@
+<!doctype html>
+
+<html lang="hu">
+<head>
+  <meta charset="utf-8">
+
+  <title>Weather station</title>
+
+  <link rel="stylesheet" href="bower_components/ubuntu-fontface/ubuntu-base.css">
+  <link rel="stylesheet" href="bower_components/weather-icons/css/weather-icons.css">
+  <link rel="stylesheet" href="css/spin.css">
+  <link rel="stylesheet" href="css/weather-station.css">
+</head>
+
+<body>
+  <header>
+    <span class="brand">
+        <img class="brand-image" src="cloud.png">
+    </span>
+
+    <ul class="menu">
+      <li>
+        <a href="latest.html">
+          <i class="icon wi wi-time-2"></i>
+          Latest
+        </a>
+      </li>
+      <li>
+        <a href="history.html">
+          <i class="icon wi wi-earthquake"></i>
+          History
+        </a>
+      </li>
+    </ul>
+  </header>
+
+  <div class="content">
+  </div>
+
+  <script src="node_modules/handlebars/dist/handlebars.min.js"></script>
+  <script src="latest.js"></script>
+
+  <script id="reading-template" type="text/x-handlebars-template">
+    {{#each sensors}}
+    <div class="reading">
+      <div class="meter-name">
+        {{ this.sensor }}
+      </div>
+
+      <div class="value-container">
+        <div class="icon">
+          <i class="wi wi-thermometer"></i>
+        </div>
+
+        <div class="value">
+          {{ this.temp }} °C
+        </div>
+      </div>
+
+      {{#if this.obsolete}}
+      <div class="value-container">
+        <div class="icon">
+          <i class="wi wi-na"></i>
+        </div>
+      </div>
+      {{/if}}
+
+      {{#if this.hum}}
+      <div class="value-container">
+        <div class="icon">
+          <i class="wi wi-sprinkles"></i>
+        </div>
+
+        <div class="value">
+          {{ this.hum }} %
+        </div>
+      </div>
+      {{/if}}
+
+      <div class="details-container">
+        <div class="icon">
+          <i class="wi wi-time-2"></i>
+        </div>
+
+        <div class="value">
+          {{ this.time }}
+        </div>
+
+
+        <div class="icon">
+          <i class="wi wi-lightning"></i>
+        </div>
+
+        <div class="value">
+          {{ this.inputVoltage }} mV
+        </div>
+      </div>
+    </div>
+    {{/each}}
+  </script>
+</body>
+</html>
